@@ -11,13 +11,15 @@ public class SignUp : MonoBehaviour
     public InputField newPassword;
     public InputField confirmPassword;
 
-    public void NewSignUp()
-    {
-        if (Login.usernameList.Contains(newUsername.text))
-        {
-            Debug.Log("Nah Mate");
-        }
-    }
+    //UserDetails user;
+
+    //public void NewSignUp()
+    //{
+    //    if (user.usernameList.Contains(newUsername.text))
+    //    {
+    //        Debug.Log("Nah Mate");
+    //    }
+    //}
     public void Cancel()
     {
         SceneManager.LoadScene("Login");

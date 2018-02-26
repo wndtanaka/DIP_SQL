@@ -9,24 +9,23 @@ public class Login : MonoBehaviour
     public InputField username;
     public InputField password;
 
-    public static List<string> usernameList = new List<string>();
-    public static List<string> passwordList = new List<string>();
+    public UserDetails<string> detail = new UserDetails<string>();
+    public List<string> passwordList = new List<string>();
 
     void Start()
     {
-        usernameList.Add("admin");
-        passwordList.Add("admin");
+        detail.Add("admin");
     }
 
     public void LoginInput()
     {
-        for (int i = 0; i < usernameList.Count; i++)
+        for (int i = 0; i < detail.amount; i++)
         {
             if (username.text == "")
             {
                 Debug.Log("Please put your username in the box");
             }
-            else if (username.text == usernameList[i])
+            else if (username.text == detail.data[i])
             {
                 PasswordInput();
             }
