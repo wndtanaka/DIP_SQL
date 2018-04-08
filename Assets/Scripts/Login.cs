@@ -3,60 +3,119 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class Login : MonoBehaviour
 {
     public InputField username;
     public InputField password;
 
-    public UserDetails<string> detail = new UserDetails<string>();
-    public List<string> passwordList = new List<string>();
+    public Text notify;
 
-    void Start()
+    #region String Text
+    private bool canLogin = false;
+    private string loginSuccess = "Login Success";
+    private string incorrectUsername = "User Not Found";
+    private string incorrectPassword = "Password Incorrect";
+    #endregion
+
+    private int currentInputField;
+    private InputField[] inputFields;
+
+    private void Start()
     {
-        detail.Add("admin");
+        inputFields = transform.GetComponentsInChildren<InputField>();
+        inputFields[0].Select();
     }
 
-    public void LoginInput()
+    private void Update()
     {
-        for (int i = 0; i < detail.amount; i++)
+        if (Input.GetKeyDown(KeyCode.Return))
         {
-            if (username.text == "")
+            StartCoroutine(UserLogin());
+            StartCoroutine(ShowNotification());
+        }
+
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            TogglingInputFields(1);
+        }
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (EventSystem.current.currentSelectedGameObject == null)
             {
-                Debug.Log("Please put your username in the box");
+                return;
             }
-            else if (username.text == detail.data[i])
+            if (EventSystem.current.currentSelectedGameObject == username.gameObject)
             {
-                PasswordInput();
+                currentInputField = 0;
             }
-            else
+            if (EventSystem.current.currentSelectedGameObject == password.gameObject)
             {
-                Debug.Log("Invalid username / password");
+                currentInputField = 1;
             }
         }
     }
 
-    void PasswordInput()
+    void TogglingInputFields(int direction)
     {
-        for (int i = 0; i < passwordList.Count; i++)
+        currentInputField += direction;
+        if (currentInputField > inputFields.Length - 1)
         {
-            if (password.text == "")
-            {
-                Debug.Log("Please put your password in the box");
-            }
-            else if (password.text == passwordList[i])
-            {
-                Debug.Log("Password Correct");
-            }
-            else
-            {
-                Debug.Log("Invalid username / password");
-            }
+            currentInputField = 0;
         }
+        if (currentInputField < 0)
+        {
+            inputFields[inputFields.Length - 1].Select();
+        }
+        inputFields[currentInputField].Select();
     }
 
-    public void SignUp()
+    public void LoginButton()
+    {
+        StartCoroutine(UserLogin());
+        StartCoroutine(ShowNotification());
+    }
+
+    public void SignUpButton()
     {
         SceneManager.LoadScene("SignUp");
+    }
+
+    public void ForgotPassword()
+    {
+        SceneManager.LoadScene("ForgetLogin");
+    }
+
+    IEnumerator UserLogin()
+    {
+        string loginURL = "http://localhost/loginsystem/login.php";
+        WWWForm loginForm = new WWWForm();
+        loginForm.AddField("username_Post", username.text);
+        loginForm.AddField("password_Post", password.text);
+        WWW www = new WWW(loginURL, loginForm);
+        yield return www;
+        if (www.text == loginSuccess)
+        {
+            notify.text = "Logging in...";
+            //canLogin = !canLogin;
+            SceneManager.LoadScene("MainMenu");
+        }
+        else if (www.text == incorrectUsername)
+        {
+            notify.text = "Username not found, please sign up";
+        }
+        else if (www.text == incorrectPassword)
+        {
+            notify.text = "Invalid password";
+        }
+    }
+
+    IEnumerator ShowNotification()
+    {
+        notify.enabled = true;
+        yield return new WaitForSeconds(2f);
+        notify.enabled = false;
     }
 }
