@@ -5,26 +5,41 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
+using System.Net;
+using System.Net.Mail;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
+
 public class PasswordRecovery : MonoBehaviour
 {
     public InputField username;
     public InputField email;
     public InputField newPassword;
     public InputField confirmNewPassword;
+    public InputField verifyCode;
 
-    public Text notify;
+    public Text checkDetailsNotify;
+    public Text changePasswordNotify;
 
     public Image checkDetails;
     public Image changePassword;
+    public GameObject codePanel;
 
     #region String Text
     private string userChecked = "User Checked";
     private string userNotFound = "User Not Found";
     private string incorrectEmail = "Incorrect Email";
+    private string sqlpassword = "sqlpassword";
+
+    private const string codeChar = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"; //add the characters you want
+    private int codeLength = 6;
+    private string myCode;
     #endregion
 
     private int currentInputField;
     private InputField[] inputFields;
+    private bool canReset = false;
+
 
     private void Start()
     {
@@ -73,19 +88,21 @@ public class PasswordRecovery : MonoBehaviour
     public void ForgetButton()
     {
         StartCoroutine(CheckingDetails());
-        StartCoroutine(ShowNotification());
+        StartCoroutine(CheckDetailsNotification());
     }
     public void ChangePasswordButton()
     {
         if (newPassword.text == confirmNewPassword.text)
         {
+            changePasswordNotify.text = "Password changed";
             StartCoroutine(ChangingPassword());
+            StartCoroutine(ChangePasswordNotification());
         }
         else
         {
-            // TODO notify
+            changePasswordNotify.text = "Password does not match";
+            StartCoroutine(ChangePasswordNotification());
         }
-        //StartCoroutine(ShowNotification());
     }
 
     public void CancelButton()
@@ -104,17 +121,13 @@ public class PasswordRecovery : MonoBehaviour
         Debug.Log(www.text);
         if (www.text == userChecked)
         {
-            notify.text = "Changing Password";
-            checkDetails.gameObject.SetActive(false);
-            changePassword.gameObject.SetActive(true);
+            canReset = true;
+            checkDetailsNotify.text = "Changing Password";
         }
-        if (www.text == incorrectEmail)
+        if (www.text == incorrectEmail || www.text == userNotFound)
         {
-            notify.text = "Incorrect email";
-        }
-        if (www.text == userNotFound)
-        {
-            notify.text = "User not found";
+            canReset = false;
+            checkDetailsNotify.text = "Invalid user details";
         }
     }
 
@@ -130,10 +143,82 @@ public class PasswordRecovery : MonoBehaviour
         Debug.Log(www.text);
     }
 
-    IEnumerator ShowNotification()
+    IEnumerator CheckDetailsNotification()
     {
-        notify.enabled = true;
+        checkDetailsNotify.enabled = true;
         yield return new WaitForSeconds(2f);
-        notify.enabled = false;
+        checkDetailsNotify.enabled = false;
+    }
+    IEnumerator ChangePasswordNotification()
+    {
+        checkDetailsNotify.enabled = true;
+        yield return new WaitForSeconds(2f);
+        checkDetailsNotify.enabled = false;
+    }
+
+    public void ResetButton()
+    {
+        StartCoroutine(SendingEmail());
+    }
+
+    IEnumerator SendingEmail()
+    {
+        for (int i = 0; i < codeLength; i++)
+        {
+            myCode += codeChar[Random.Range(0, codeChar.Length)];
+        }
+        codePanel.SetActive(true);
+
+        yield return new WaitForSeconds(0.5f);
+
+        if (canReset)
+        {
+            MailMessage mail = new MailMessage();
+            mail.From = new MailAddress("sqlunityclasssydney@gmail.com");
+            mail.To.Add(email.text); // TODO, email from user
+            mail.Subject = "Reset Password";
+            mail.Body = "Reset you password by entering the code below\n\n\n" + myCode;
+
+            // Simple Main Transfer Protocol
+            SmtpClient smtpServer = new SmtpClient("smtp.gmail.com");
+            smtpServer.Port = 25;
+            smtpServer.Credentials = new NetworkCredential(mail.From.ToString(), sqlpassword) as ICredentialsByHost;
+            smtpServer.EnableSsl = true;
+
+            ServicePointManager.ServerCertificateValidationCallback = delegate (object s, X509Certificate cert, X509Chain chain, SslPolicyErrors policyErrors) { return true; };
+
+            smtpServer.Send(mail);
+
+            Debug.Log("Success");
+        }
+        else
+        {
+            Debug.Log("Nope");
+        }
+    }
+    public void SubmitCodeButton()
+    {
+        CodeVerify();
+    }
+
+    void CodeVerify()
+    {
+        if (verifyCode.text == myCode)
+        {
+            Debug.Log("Code Verified");
+            codePanel.SetActive(false);
+            checkDetails.gameObject.SetActive(false);
+            changePassword.gameObject.SetActive(true);
+            myCode = null;
+        }
+        else
+        {
+            Debug.Log("Wrong Code");
+        }
     }
 }
+
+/*
+TODO
+
+*/

@@ -58,12 +58,10 @@ public class SignUp : MonoBehaviour
             if (inputFields[2].isFocused)
             {
                 PasswordCheck();
-                //StartCoroutine(CheckingRealTime());
             }
             if (inputFields[3].isFocused)
             {
                 PasswordMatch();
-                //StartCoroutine(CheckingRealTime());
             }
             TogglingInputFields(1);
         }
@@ -121,7 +119,7 @@ public class SignUp : MonoBehaviour
     {
         string createUserURL = "http://localhost/loginsystem/insertuser.php";
         WWWForm user = new WWWForm();
-        if (newUsername.text != "" && (newPassword.text != "" && newPassword.text.Length >= 6) && (newEmail.text != "" && newEmail.text.Contains("@") && newEmail.text.Contains(".") && !newEmail.text.Contains(" ")))
+        if ((newUsername.text != "") && (newPassword.text != "" && newPassword.text.Length >= 6) && (newEmail.text != "" && newEmail.text.Contains("@") && newEmail.text.Contains(".") && !newEmail.text.Contains(" ")) && (newPassword.text == confirmPassword.text))
         {
             user.AddField("username_Post", newUsername.text);
             user.AddField("email_Post", newEmail.text);
@@ -150,8 +148,6 @@ public class SignUp : MonoBehaviour
 
     IEnumerator CheckingRealTime()
     {
-        //usernameChecks.enabled = false;
-        //emailChecks.enabled = false;
         string checkURL = "http://localhost/loginsystem/realtimecheck.php";
         WWWForm checkForm = new WWWForm();
         checkForm.AddField("username_Post", newUsername.text);
