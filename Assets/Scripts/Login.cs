@@ -96,6 +96,7 @@ public class Login : MonoBehaviour
         loginForm.AddField("password_Post", password.text);
         WWW www = new WWW(loginURL, loginForm);
         yield return www;
+        //Debug.Log(www.text);
         if (www.text == loginSuccess)
         {
             notify.text = "Logging in...";
