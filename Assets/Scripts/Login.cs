@@ -7,20 +7,20 @@ using UnityEngine.EventSystems;
 
 public class Login : MonoBehaviour
 {
+    #region Variables
     public InputField username;
     public InputField password;
-
+    public Button loginButton;
     public Text notify;
+    private int currentInputField;
+    private InputField[] inputFields;
+    #endregion
 
     #region String Text
-    private bool canLogin = false;
     private string loginSuccess = "Login Success";
     private string incorrectUsername = "User Not Found";
     private string incorrectPassword = "Password Incorrect";
     #endregion
-
-    private int currentInputField;
-    private InputField[] inputFields;
 
     private void Start()
     {
@@ -28,8 +28,22 @@ public class Login : MonoBehaviour
         inputFields[0].Select();
     }
 
+    // Toggling InputFields using Tab key and keep in track of InputFields number when user click the InputField
     private void Update()
     {
+        if (username.text == "" || password.text == "")
+        {
+            loginButton.interactable = false;
+            if (loginButton.interactable == false)
+            {
+                loginButton.GetComponent<EventTrigger>().enabled = false;
+            }
+        }
+        else
+        {
+            loginButton.interactable = true;
+            loginButton.GetComponent<EventTrigger>().enabled = true;
+        }
         if (Input.GetKeyDown(KeyCode.Return))
         {
             StartCoroutine(UserLogin());
@@ -57,7 +71,7 @@ public class Login : MonoBehaviour
             }
         }
     }
-
+    // toggling and counter inputfields
     void TogglingInputFields(int direction)
     {
         currentInputField += direction;
@@ -71,23 +85,23 @@ public class Login : MonoBehaviour
         }
         inputFields[currentInputField].Select();
     }
-
+    // will check user logion details and show feedback accordingly, if correct then will go to MainMenu
     public void LoginButton()
     {
         StartCoroutine(UserLogin());
         StartCoroutine(ShowNotification());
     }
-
+    // take user to SignUp Scene
     public void SignUpButton()
     {
         SceneManager.LoadScene("SignUp");
     }
-
+    // take user to ForgetLogin scene
     public void ForgotPassword()
     {
         SceneManager.LoadScene("ForgetLogin");
     }
-
+    #region PHP
     IEnumerator UserLogin()
     {
         string loginURL = "http://localhost/loginsystem/login.php";
@@ -112,7 +126,8 @@ public class Login : MonoBehaviour
             notify.text = "Invalid password";
         }
     }
-
+    #endregion
+    // feedback notification
     IEnumerator ShowNotification()
     {
         notify.enabled = true;

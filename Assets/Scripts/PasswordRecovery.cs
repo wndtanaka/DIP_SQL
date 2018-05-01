@@ -12,18 +12,22 @@ using System.Security.Cryptography.X509Certificates;
 
 public class PasswordRecovery : MonoBehaviour
 {
-    public InputField username;
+    #region Variables
+    public static InputField username;
     public InputField email;
-    public InputField newPassword;
-    public InputField confirmNewPassword;
     public InputField verifyCode;
 
+    public Button sendCodeButton;
     public Text checkDetailsNotify;
-    public Text changePasswordNotify;
+    public Text codeNotify;
 
-    public Image checkDetails;
-    public Image changePassword;
+    //public Image checkDetails;
     public GameObject codePanel;
+
+    private int currentInputField;
+    private InputField[] inputFields;
+    private bool canReset = false;
+    #endregion
 
     #region String Text
     private string userChecked = "User Checked";
@@ -36,19 +40,31 @@ public class PasswordRecovery : MonoBehaviour
     private string myCode;
     #endregion
 
-    private int currentInputField;
-    private InputField[] inputFields;
-    private bool canReset = false;
-
-
     private void Start()
     {
+        // get RegisteredUsername InputFields component that will be passed to PasswordReset Username variable
+        username = GameObject.Find("RegisteredUsername").GetComponent<InputField>();
         inputFields = transform.GetComponentsInChildren<InputField>();
         inputFields[0].Select();
     }
 
+    // Toggling InputFields using Tab key and keep in track of InputFields number when user click the InputField
     private void Update()
     {
+        if (username.text == "" || email.text == "")
+        {
+            sendCodeButton.interactable = false;
+            if (sendCodeButton.interactable == false)
+            {
+                sendCodeButton.GetComponent<EventTrigger>().enabled = false;
+            }
+        }
+        else
+        {
+            sendCodeButton.interactable = true;
+            sendCodeButton.GetComponent<EventTrigger>().enabled = true;
+        }
+
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             TogglingInputFields(1);
@@ -71,6 +87,7 @@ public class PasswordRecovery : MonoBehaviour
         }
     }
 
+    // toggling inputfields
     void TogglingInputFields(int direction)
     {
         currentInputField += direction;
@@ -84,32 +101,19 @@ public class PasswordRecovery : MonoBehaviour
         }
         inputFields[currentInputField].Select();
     }
-
+    // forget / reset button check all the code input by player
     public void ForgetButton()
     {
         StartCoroutine(CheckingDetails());
         StartCoroutine(CheckDetailsNotification());
     }
-    public void ChangePasswordButton()
-    {
-        if (newPassword.text == confirmNewPassword.text)
-        {
-            changePasswordNotify.text = "Password changed";
-            StartCoroutine(ChangingPassword());
-            StartCoroutine(ChangePasswordNotification());
-        }
-        else
-        {
-            changePasswordNotify.text = "Password does not match";
-            StartCoroutine(ChangePasswordNotification());
-        }
-    }
-
+    // cancel button will take user to the Login scene
     public void CancelButton()
     {
         SceneManager.LoadScene("Login");
     }
 
+    #region PHP
     IEnumerator CheckingDetails()
     {
         string passwordRecoveryURL = "http://localhost/loginsystem/passwordrecovery.php";
@@ -131,48 +135,19 @@ public class PasswordRecovery : MonoBehaviour
         }
     }
 
-    IEnumerator ChangingPassword()
-    {
-        string changePasswrordURL = "http://localhost/loginsystem/changepassword.php";
-        WWWForm detailsForm = new WWWForm();
-        detailsForm.AddField("username_Post", username.text);
-        detailsForm.AddField("password_Post", newPassword.text);
-        //detailsForm.AddField("newpassword_Post", confirmNewPassword.text);
-        WWW www = new WWW(changePasswrordURL, detailsForm);
-        yield return www;
-        Debug.Log(www.text);
-    }
-
-    IEnumerator CheckDetailsNotification()
-    {
-        checkDetailsNotify.enabled = true;
-        yield return new WaitForSeconds(2f);
-        checkDetailsNotify.enabled = false;
-    }
-    IEnumerator ChangePasswordNotification()
-    {
-        checkDetailsNotify.enabled = true;
-        yield return new WaitForSeconds(2f);
-        checkDetailsNotify.enabled = false;
-    }
-
-    public void ResetButton()
-    {
-        StartCoroutine(SendingEmail());
-    }
-
     IEnumerator SendingEmail()
     {
         for (int i = 0; i < codeLength; i++)
         {
             myCode += codeChar[Random.Range(0, codeChar.Length)];
         }
-        codePanel.SetActive(true);
+
 
         yield return new WaitForSeconds(0.5f);
 
         if (canReset)
         {
+            codePanel.SetActive(true);
             MailMessage mail = new MailMessage();
             mail.From = new MailAddress("sqlunityclasssydney@gmail.com");
             mail.To.Add(email.text); // TODO, email from user
@@ -196,25 +171,56 @@ public class PasswordRecovery : MonoBehaviour
             Debug.Log("Nope");
         }
     }
+    #endregion
+
+    // notify check details feedback
+    IEnumerator CheckDetailsNotification()
+    {
+        checkDetailsNotify.enabled = true;
+        yield return new WaitForSeconds(2f);
+        checkDetailsNotify.enabled = false;
+    }
+    // notify check error feedback
+    IEnumerator CodeCheckNotification()
+    {
+        codeNotify.enabled = true;
+        yield return new WaitForSeconds(2f);
+        codeNotify.enabled = false;
+    }
+
+    // reset password button will send an email to the input email by user and also start a countdown timer before user can send another email.
+    public void ResetButton()
+    {
+        StartCoroutine(SendingEmail());
+        Timer.resendTimer = 60f;
+    }
+    // verify a code that sent to the user's email
     public void SubmitCodeButton()
     {
         CodeVerify();
     }
-
+    // check if the input code is the same as generated code, then open the ChangePassword scene ontop of this scene. also reset myCode to null for error check
+    // if code does not match, send feedback to user
     void CodeVerify()
     {
         if (verifyCode.text == myCode)
         {
             Debug.Log("Code Verified");
             codePanel.SetActive(false);
-            checkDetails.gameObject.SetActive(false);
-            changePassword.gameObject.SetActive(true);
+            //checkDetails.gameObject.SetActive(false);
+            SceneManager.LoadSceneAsync("ChangePassword");
             myCode = null;
         }
         else
         {
-            Debug.Log("Wrong Code");
+            codeNotify.text = "Invalid Code";
+            StartCoroutine(CodeCheckNotification());
         }
+    }
+    // cancel verify button will close the panel
+    public void CancelVerify()
+    {
+        codePanel.SetActive(false);
     }
 }
 

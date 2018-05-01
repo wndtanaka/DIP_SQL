@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-
+// hover pointer animation 
 public class HoverPointer : MonoBehaviour
 {
     [SerializeField]

@@ -7,17 +7,33 @@ using UnityEngine.EventSystems;
 
 public class SignUp : MonoBehaviour
 {
+    #region Variables
     public InputField newUsername;
     public InputField newEmail;
     public InputField newPassword;
     public InputField confirmPassword;
 
+    public Button signUpButton;
     public Text notify;
-    public Text usernameChecks;
-    public Text emailChecks;
-    public Text passwordChecks;
-    public Text passwordMatches;
+    public bool canSignUp = false;
 
+    #region Success Check
+    public Image usernameCheck;
+    public Image emailCheck;
+    public Image passwordCheck;
+    public Image passwordMatch;
+    #endregion
+
+    #region Fail Check
+    public Image usernameFail;
+    public Image emailFail;
+    public Image passwordFail;
+    public Image passwordFailMatch;
+
+    private int currentInputField;
+    private InputField[] inputFields;
+    #endregion
+    #endregion
     #region String Text
     private string firstUser = "Create First User";
     private string createdUser = "Created User";
@@ -25,17 +41,27 @@ public class SignUp : MonoBehaviour
     private string emailExist = "Email Already Exists";
     #endregion
 
-    private int currentInputField;
-    private InputField[] inputFields;
-
     void Start()
     {
-        notify.enabled = false;
         inputFields = transform.GetComponentsInChildren<InputField>();
         inputFields[0].Select();
     }
+    // Toggling InputFields using Tab key and keep in track of InputFields number when user click the InputField
     void Update()
     {
+        if (usernameCheck.enabled == false || emailCheck.enabled == false || passwordCheck.enabled == false || passwordMatch.enabled == false)
+        {
+            signUpButton.interactable = false;
+            if (signUpButton.interactable == false)
+            {
+                signUpButton.GetComponent<EventTrigger>().enabled = false;
+            }
+        }
+        else
+        {
+            signUpButton.interactable = true;
+            signUpButton.GetComponent<EventTrigger>().enabled = true;
+        }
         if (Input.GetKeyDown(KeyCode.Return))
         {
             StartCoroutine(CreateAccount());
@@ -46,13 +72,15 @@ public class SignUp : MonoBehaviour
             if (inputFields[0].isFocused)
             {
                 StartCoroutine(CheckingRealTime());
-                usernameChecks.enabled = false;
+                usernameCheck.enabled = false;
+                usernameFail.enabled = false;
                 UserNameCheck();
             }
             if (inputFields[1].isFocused)
             {
                 StartCoroutine(CheckingRealTime());
-                emailChecks.enabled = false;
+                emailCheck.enabled = false;
+                emailFail.enabled = false;
                 EmailCheck();
             }
             if (inputFields[2].isFocused)
@@ -95,6 +123,7 @@ public class SignUp : MonoBehaviour
             }
         }
     }
+    // togglinf and counter inputfields
     void TogglingInputFields(int direction)
     {
         currentInputField += direction;
@@ -108,13 +137,13 @@ public class SignUp : MonoBehaviour
         }
         inputFields[currentInputField].Select();
     }
-
+    // create account button will call php script, check all details input by user and then will give feedback accordingly
     public void CreateAccountButton()
     {
         StartCoroutine(CreateAccount());
         StartCoroutine(ShowNotification());
     }
-
+    #region PHP
     IEnumerator CreateAccount()
     {
         string createUserURL = "http://localhost/loginsystem/insertuser.php";
@@ -142,6 +171,7 @@ public class SignUp : MonoBehaviour
         }
         else
         {
+            canSignUp = false;
             notify.text = "There are some error in the form";
         }
     }
@@ -157,89 +187,103 @@ public class SignUp : MonoBehaviour
         Debug.Log(www.text);
         if (www.text == userExist + emailExist || www.text == userExist)
         {
-            usernameChecks.text = "Username taken";
+            usernameFail.enabled = true;
+            usernameCheck.enabled = false;
         }
         else
         {
-            usernameChecks.text = "Username available";
+            usernameCheck.enabled = true;
+            usernameFail.enabled = false;
             if (newUsername.text == "" || newUsername.text.Contains(" "))
             {
-                usernameChecks.text = "Username invalid";
+                usernameFail.enabled = true;
+                usernameCheck.enabled = false;
             }
         }
         if (www.text == userExist + emailExist || www.text == emailExist)
         {
-            emailChecks.text = "Email has been registered";
+            emailFail.enabled = true;
+            emailCheck.enabled = false;
         }
         else
         {
-            emailChecks.text = "Email available";
-            if (newEmail.text == "" || !newEmail.text.Contains("@") || !newEmail.text.Contains(".") || newEmail.text.Contains(" "))
+            emailCheck.enabled = true;
+            emailFail.enabled = false;
+            if (/*newEmail.text == "" || */!newEmail.text.Contains("@") || !newEmail.text.Contains(".") || newEmail.text.Contains(" "))
             {
-                emailChecks.text = "Email Invalid";
+                emailFail.enabled = true;
+                emailCheck.enabled = false;
             }
         }
 
     }
-
+    #endregion
+    // cancel button will take user back to login screen
     public void Cancel()
     {
         SceneManager.LoadScene("Login");
     }
-
+    // notify user feedback
     IEnumerator ShowNotification()
     {
         notify.enabled = true;
         yield return new WaitForSeconds(2f);
         notify.enabled = false;
     }
-
+    // checking user details realtime then also show check or cross mark depends on criteria
+    #region User Check
     void UserNameCheck()
     {
-        usernameChecks.enabled = true;
         if (newUsername.text == "")
         {
-            usernameChecks.text = "Username invalid";
+            usernameFail.enabled = true;
+            usernameCheck.enabled = false;
         }
     }
     void EmailCheck()
     {
-        emailChecks.enabled = true;
         if (newEmail.text == "")
         {
-            emailChecks.text = "Email Invalid";
+            emailFail.enabled = true;
+            emailCheck.enabled = false;
         }
     }
     void PasswordCheck()
     {
-        passwordChecks.enabled = true;
         if (newPassword.text != "" && newPassword.text.Length >= 6)
         {
-            passwordChecks.text = "Password valid";
+            passwordCheck.enabled = true;
+            passwordFail.enabled = false;
         }
         else if (newPassword.text.Length < 6)
         {
-            passwordChecks.text = "Password need to be at least 6 characters";
+            passwordFail.enabled = true;
+            passwordCheck.enabled = false;
         }
         else
         {
-            passwordChecks.text = "Password invalid";
+            passwordFail.enabled = true;
+            passwordCheck.enabled = false;
         }
     }
     void PasswordMatch()
     {
-        passwordMatches.enabled = true;
         if (newPassword.text == "")
         {
-            passwordMatches.text = "Password invalid";
+            passwordFailMatch.enabled = true;
+            passwordMatch.enabled = false;
         }
         else if (confirmPassword.text == newPassword.text)
         {
-            passwordMatches.text = "Password match";
+            passwordMatch.enabled = true;
+            passwordFailMatch.enabled = false;
         }
         else
         {
-            passwordMatches.text = "Password does not match";
+            passwordFailMatch.enabled = true;
+            passwordMatch.enabled = false;
         }
     }
+    #endregion
+
 }

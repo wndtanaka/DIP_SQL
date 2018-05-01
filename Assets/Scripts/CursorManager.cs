@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// custom cursor manager
 public class CursorManager : MonoBehaviour
 {
     [SerializeField]
@@ -15,18 +16,12 @@ public class CursorManager : MonoBehaviour
     [SerializeField]
     LayerMask layerMask;
 
-    // Use this for initialization
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
     void Update()
     {
+        // racaysting from camera to the mouse position
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-
+        // also filter by layermask
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
         {
             if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Target"))
@@ -38,6 +33,7 @@ public class CursorManager : MonoBehaviour
                 Cursor.SetCursor(pickupCursor, cursorHotspot, CursorMode.Auto);
             }
         }
+        // by default set to the default cursor
         else
         {
             Cursor.SetCursor(defaultCursor, cursorHotspot, CursorMode.Auto);
