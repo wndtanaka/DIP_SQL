@@ -5,6 +5,8 @@ using UnityEngine;
 // custom cursor manager
 public class CursorManager : MonoBehaviour
 {
+    // serializefield when you want your variables private but show them on the screen to easy access
+    #region Custom Cursor
     [SerializeField]
     Texture2D defaultCursor;
     [SerializeField]
@@ -13,6 +15,8 @@ public class CursorManager : MonoBehaviour
     Texture2D pickupCursor;
     [SerializeField]
     Vector2 cursorHotspot = new Vector2(5, 5);
+    #endregion
+
     [SerializeField]
     LayerMask layerMask;
 

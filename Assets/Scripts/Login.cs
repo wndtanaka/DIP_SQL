@@ -31,6 +31,7 @@ public class Login : MonoBehaviour
     // Toggling InputFields using Tab key and keep in track of InputFields number when user click the InputField
     private void Update()
     {
+        // if one of the inputfield is empty then disabled the SignUpButton
         if (username.text == "" || password.text == "")
         {
             loginButton.interactable = false;
@@ -49,12 +50,12 @@ public class Login : MonoBehaviour
             StartCoroutine(UserLogin());
             StartCoroutine(ShowNotification());
         }
-
+        // when you press tab then it will give 1 int to TogglingInputFields so then it will incrementing the selected tab to 1
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             TogglingInputFields(1);
         }
-
+        // checking the inputfield position when clicked with mouse
         if (Input.GetMouseButtonDown(0))
         {
             if (EventSystem.current.currentSelectedGameObject == null)

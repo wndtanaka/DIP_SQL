@@ -36,7 +36,7 @@ public class PasswordRecovery : MonoBehaviour
     private string sqlpassword = "sqlpassword";
 
     private const string codeChar = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"; //add the characters you want
-    private int codeLength = 6;
+    private int codeLength = 8;
     private string myCode;
     #endregion
 
@@ -51,6 +51,7 @@ public class PasswordRecovery : MonoBehaviour
     // Toggling InputFields using Tab key and keep in track of InputFields number when user click the InputField
     private void Update()
     {
+        // if one of the inputfield is empty then disabled the SignUpButton
         if (username.text == "" || email.text == "")
         {
             sendCodeButton.interactable = false;
@@ -65,11 +66,12 @@ public class PasswordRecovery : MonoBehaviour
             sendCodeButton.GetComponent<EventTrigger>().enabled = true;
         }
 
+        // when you press tab then it will give 1 int to TogglingInputFields so then it will incrementing the selected tab to 1
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             TogglingInputFields(1);
         }
-
+        // checking the inputfield position when clicked with mouse
         if (Input.GetMouseButtonDown(0))
         {
             if (EventSystem.current.currentSelectedGameObject == null)
@@ -150,13 +152,13 @@ public class PasswordRecovery : MonoBehaviour
             codePanel.SetActive(true);
             MailMessage mail = new MailMessage();
             mail.From = new MailAddress("sqlunityclasssydney@gmail.com");
-            mail.To.Add(email.text); // TODO, email from user
+            mail.To.Add(email.text);
             mail.Subject = "Reset Password";
-            mail.Body = "Reset you password by entering the code below\n\n\n" + myCode;
+            mail.Body = "Reset your password by entering the code below\n\n\n" + myCode;
 
             // Simple Main Transfer Protocol
             SmtpClient smtpServer = new SmtpClient("smtp.gmail.com");
-            smtpServer.Port = 25;
+            smtpServer.Port = 587; // TODO change port between 25,465,587 if it does not work
             smtpServer.Credentials = new NetworkCredential(mail.From.ToString(), sqlpassword) as ICredentialsByHost;
             smtpServer.EnableSsl = true;
 
