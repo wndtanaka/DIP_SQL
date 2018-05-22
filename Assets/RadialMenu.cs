@@ -27,7 +27,7 @@ public class RadialMenu : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButtonUp(0))
+        if (Input.GetKeyUp(KeyCode.Tab))
         {
             if (selected)
             {

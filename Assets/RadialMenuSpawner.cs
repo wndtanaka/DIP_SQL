@@ -16,7 +16,7 @@ public class RadialMenuSpawner : MonoBehaviour
     {
         RadialMenu newMenu = Instantiate(menuPrefab);
         newMenu.transform.SetParent(transform, false);
-        newMenu.transform.position = Input.mousePosition;
+        newMenu.transform.position = /*Input.mousePosition*/transform.position;
         newMenu.SpawnButtons(obj);
     }
 }
