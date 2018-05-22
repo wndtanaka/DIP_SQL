@@ -24,9 +24,21 @@ public class CharacterCreation : MonoBehaviour
 
     }
 
-    public void CreateCharacterButton()
+    IEnumerator CharacterCreation()
     {
-        StartCoroutine(CreateCharacter(loginUsername));
+        string loginURL = "http://localhost/loginsystem/CharacterCreation.php";
+        WWWForm loginForm = new WWWForm();
+        loginForm.AddField("username_Post", username.text);
+        loginForm.AddField("password_Post", password.text);
+        WWW www = new WWW(loginURL, loginForm);
+        yield return www;
+        Debug.Log(www.text);
+    }
+}
+
+    public void CreateCharacterButton()
+    {
+        StartCoroutine(CreateCharacter(loginUsername));
     }
 
     IEnumerator CreateCharacter(string username)
@@ -41,4 +53,3 @@ public class CharacterCreation : MonoBehaviour
         Debug.Log(www.text);
         // TODO let MySQL send userdata
     }
-}
