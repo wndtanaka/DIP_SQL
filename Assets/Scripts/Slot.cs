@@ -5,10 +5,13 @@ using UnityEngine.UI;
 
 public class Slot : MonoBehaviour
 {
+    #region Variables
     private Stack<Item> items;
     public Text stackText;
     public Sprite slotEmpty;
     public Sprite slotHightlighted;
+    #endregion
+
 
     void Start()
     {
@@ -22,11 +25,6 @@ public class Slot : MonoBehaviour
 
         textRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, slotRect.sizeDelta.x);
         textRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, slotRect.sizeDelta.y);
-    }
-
-    void Update()
-    {
-
     }
 
     public void AddItem(Item item)
