@@ -12,34 +12,29 @@ public class CharacterCreation : MonoBehaviour
 
     private string loginUsername = "wendi";
     #endregion
-    // Use this for initialization
-    void Start()
-    {
 
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
+    // this function interact with Button
     public void CreateCharacterButton()
-
     {
-
+        // call CreateCharacter() passing loginUsername string
         StartCoroutine(CreateCharacter(loginUsername));
-
     }
 
     IEnumerator CreateCharacter(string username)
     {
-        string loginURL = "http://localhost/loginsystem/CharacterCreation.php";
-        WWWForm loginForm = new WWWForm();
-        loginForm.AddField("username_Post", username);
-        loginForm.AddField("charName_Post", charName.text);
-        loginForm.AddField("charClass_Post", "Mage");
-        WWW www = new WWW(loginURL, loginForm);
+        // store createCharURL as a string 
+        string createCharURL = "http://localhost/loginsystem/CharacterCreation.php";
+        // create a new WWWForm()
+        WWWForm createCharForm = new WWWForm();
+        // match username_Post in PHP with username
+        createCharForm.AddField("username_Post", username);
+        // match charName_Post in PHP with charName.text
+        createCharForm.AddField("charName_Post", charName.text);
+        // match charClass_Post in PHP with charClass
+        createCharForm.AddField("charClass_Post", "Mage");
+        // create a new WWW() taking crteateCharURL and createCharForm
+        WWW www = new WWW(createCharURL, createCharForm);
+        // return www
         yield return www;
         Debug.Log(www.text);
         // TODO let MySQL send userdata

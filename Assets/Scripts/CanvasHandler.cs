@@ -5,11 +5,16 @@ using UnityEngine.UI;
 
 public class CanvasHandler : MonoBehaviour
 {
-    private CanvasScaler scaler;
+    #region Variables
+private CanvasScaler scaler;
+    #endregion
+    
     // Use this for initialization
     void Start()
     {
+        // get CanvasScaler component for scaler
         scaler = GetComponent<CanvasScaler>();
+        // set scaler uiScaleMode to ScaleWithScreenSize
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
     }
 
