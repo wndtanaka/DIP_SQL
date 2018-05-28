@@ -15,14 +15,92 @@ public class CharacterCreation : MonoBehaviour
     private int index = 0;
     private string characterClass;
     private const int newLevel = 1;
+
+    #region Stats
+    [Header("Stats")]
+    public int strength;
+    public int dexterity;
+    public int intelligence;
+    public int wisdom;
+    public int charisma;
+    public int luck;
+
+    private int bonusPoint = 5;
+
+    #endregion
+    #region Stats Text
+    [Header("Stats Text Component")]
+    public Text strengthText;
+    public Text dexterityText;
+    public Text intelligenceText;
+    public Text wisdomText;
+    public Text charismaText;
+    public Text luckText;
+    #endregion
+
     #endregion
 
     void Start()
     {
         charClassText.text = charClass[0];
         characterClass = charClass[0];
+        DefaultStats(0);
     }
 
+    void Update()
+    {
+        strengthText.text = strength.ToString();
+        dexterityText.text = dexterity.ToString();
+        intelligenceText.text = intelligence.ToString();
+        wisdomText.text = wisdom.ToString();
+        charismaText.text = charisma.ToString();
+        luckText.text = luck.ToString();
+    }
+
+    public void DefaultStats(int index)
+    {
+        switch (charClass[index])
+        {
+            case "Warrior":
+                strength = 17;
+                dexterity = 8;
+                intelligence = 5;
+                wisdom = 11;
+                charisma = 9;
+                luck = 10;
+                break;
+            case "Rogue":
+                strength = 9;
+                dexterity = 16;
+                intelligence = 7;
+                wisdom = 10;
+                charisma = 6;
+                luck = 12;
+                break;
+            case "Mage":
+                strength = 6;
+                dexterity = 6;
+                intelligence = 18;
+                wisdom = 10;
+                charisma = 12;
+                luck = 8;
+                break;
+            case "Priest":
+                strength = 4;
+                dexterity = 4;
+                intelligence = 16;
+                wisdom = 13;
+                charisma = 12;
+                luck = 11;
+                break;
+        }
+    }
+
+    public void BonusStats()
+    {
+
+
+    }
     public void TogglingClass(int amount)
     {
         index += amount;
@@ -41,6 +119,7 @@ public class CharacterCreation : MonoBehaviour
             charClassText.text = charClass[index];
         }
         characterClass = charClass[index];
+        DefaultStats(index);
     }
 
     // this function is for create the customised character
