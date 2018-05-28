@@ -148,8 +148,10 @@ public class Login : MonoBehaviour
         {
             // change notify.text
             notify.text = "Logging in...";
+			// set LoggedInUsername to username.text
+			GameManager.LoggedInUsername = username.text;
             // load MainMenu scene
-            SceneManager.LoadScene("MainMenu");
+            SceneManager.LoadScene("CharacterSelection");
         }
         // else if www.text equal to incorrectUsername
         else if (www.text == incorrectUsername)
