@@ -96,10 +96,13 @@ public class CharacterCreation : MonoBehaviour
         }
     }
 
-    public void BonusStats()
+    public void BonusStats(int i)
     {
-
-
+        bonusPoint--;
+        if (bonusPoint <= 0)
+        {
+            // TODO 
+        }
     }
     public void TogglingClass(int amount)
     {
@@ -149,5 +152,10 @@ public class CharacterCreation : MonoBehaviour
         yield return www;
         Debug.Log(www.text);
         // TODO let MySQL send userdata
+    }
+
+    public void CancelButton()
+    {
+        SceneManager.LoadScene("CharacterSelection");
     }
 }
