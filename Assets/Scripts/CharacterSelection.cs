@@ -46,6 +46,7 @@ public class CharacterSelection : MonoBehaviour
     public Dictionary<string, Character> character = new Dictionary<string, Character>();
 
     public Text characterCount;
+    public Transform[] characterButton;
 
     // Use this for initialization
     void Start()
@@ -83,30 +84,104 @@ public class CharacterSelection : MonoBehaviour
         WWW www = new WWW(characterSelectionURL, createCharForm);
         // return www
         yield return www;
-        Debug.Log(www.text);
+        //Debug.Log(www.text);
         string[] characters = www.text.Split('#');
         characterList = new string[characters.Length - 1];
         for (int i = 0; i < characterList.Length; i++)
         {
             characterList[i] = characters[i];
-            Debug.Log(characterList[i]);
         }
         CharacterCount();
         SetCharacters();
         isLoaded = true;
     }
+
     void CharacterCount()
     {
         characterCount.text = "Character Count: " + characterList.Length.ToString();
     }
+
     void SetCharacters()
     {
         for (int i = 0; i < characterList.Length; i++)
         {
-            string[] current = characterList[i].Split('|');
-            Character chars = new Character(current[0], current[1], int.Parse(current[2]));
-            character.Add(chars.username, chars);
+            if (i == 0)
+            {
+                if (characterList[i] == null)
+                {
+                    return;
+                }
+                string[] charOne = characterList[i].Split('|');
+
+                Text charName = characterButton[i].FindChild("Character Name").GetComponent<Text>();
+                Text charClass = characterButton[i].FindChild("Character Class").GetComponent<Text>();
+                Text charLevel = characterButton[i].FindChild("Character Level").GetComponent<Text>();
+                charName.text = charOne[0];
+                charClass.text = charOne[1];
+                charLevel.text = "Level: " + charOne[2];
+            }
+            else if (i == 1)
+            {
+                if (characterList[i] == null)
+                {
+                    return;
+                }
+                string[] charTwo = characterList[i].Split('|');
+                Text charName = characterButton[i].FindChild("Character Name").GetComponent<Text>();
+                Text charClass = characterButton[i].FindChild("Character Class").GetComponent<Text>();
+                Text charLevel = characterButton[i].FindChild("Character Level").GetComponent<Text>();
+                charName.text = charTwo[0];
+                charClass.text = charTwo[1];
+                charLevel.text = "Level: " + charTwo[2];
+            }
+            else if (i == 2)
+            {
+                if (characterList[i] == null)
+                {
+                    return;
+                }
+                string[] charThree = characterList[i].Split('|');
+                Text charName = characterButton[i].FindChild("Character Name").GetComponent<Text>();
+                Text charClass = characterButton[i].FindChild("Character Class").GetComponent<Text>();
+                Text charLevel = characterButton[i].FindChild("Character Level").GetComponent<Text>();
+                charName.text = charThree[0];
+                charClass.text = charThree[1];
+                charLevel.text = "Level: " + charThree[2];
+            }
+            else if (i == 3)
+            {
+                if (characterList[i] == null)
+                {
+                    return;
+                }
+                string[] charFour = characterList[i].Split('|');
+                Text charName = characterButton[i].FindChild("Character Name").GetComponent<Text>();
+                Text charClass = characterButton[i].FindChild("Character Class").GetComponent<Text>();
+                Text charLevel = characterButton[i].FindChild("Character Level").GetComponent<Text>();
+                charName.text = charFour[0];
+                charClass.text = charFour[1];
+                charLevel.text = "Level: " + charFour[2];
+            }
+            else if (i == 4)
+            {
+                if (characterList[i] == null)
+                {
+                    Debug.Log("ok");
+                    return;
+                }
+                string[] charFive = characterList[i].Split('|');
+                Text charName = characterButton[i].FindChild("Character Name").GetComponent<Text>();
+                Text charClass = characterButton[i].FindChild("Character Class").GetComponent<Text>();
+                Text charLevel = characterButton[i].FindChild("Character Level").GetComponent<Text>();
+                charName.text = charFive[0];
+                charClass.text = charFive[1];
+                charLevel.text = "Level: " + charFive[2];
+            }
         }
-        isLoaded = true;
+
+
+
+
+
     }
 }

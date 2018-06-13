@@ -17,7 +17,8 @@ public class CharacterCreation : MonoBehaviour
     private const int newLevel = 1;
 
     #region Stats
-    [Header("Stats")]
+
+    [Header("Default Stats")]
     public int strength;
     public int dexterity;
     public int intelligence;
@@ -25,17 +26,30 @@ public class CharacterCreation : MonoBehaviour
     public int charisma;
     public int luck;
 
-    private int bonusPoint = 5;
+    [Header("Base Stats")]
+    public int baseStrength;
+    public int baseDexterity;
+    public int baseIntelligence;
+    public int baseWisdom;
+    public int baseCharisma;
+    public int baseLuck;
+
+    public int bonusPoint = 5;
 
     #endregion
     #region Stats Text
     [Header("Stats Text Component")]
+    public Text[] statsText;
     public Text strengthText;
     public Text dexterityText;
     public Text intelligenceText;
     public Text wisdomText;
     public Text charismaText;
     public Text luckText;
+    public Text bonusText;
+
+    public Button[] plusButtons;
+    public Button[] minusButtons;
     #endregion
 
     #endregion
@@ -55,6 +69,68 @@ public class CharacterCreation : MonoBehaviour
         wisdomText.text = wisdom.ToString();
         charismaText.text = charisma.ToString();
         luckText.text = luck.ToString();
+        bonusText.text = bonusPoint.ToString();
+
+        if (strength <= baseStrength)
+        {
+            minusButtons[0].interactable = false;
+        }
+        else if (strength > baseStrength)
+        {
+            minusButtons[0].interactable = true;
+        }
+        if (dexterity <= baseDexterity)
+        {
+            minusButtons[1].interactable = false;
+        }
+        else if (dexterity > baseDexterity)
+        {
+            minusButtons[1].interactable = true;
+        }
+        if (intelligence <= baseIntelligence)
+        {
+            minusButtons[2].interactable = false;
+        }
+        else if (intelligence > baseIntelligence)
+        {
+            minusButtons[2].interactable = true;
+        }
+        if (wisdom <= baseWisdom)
+        {
+            minusButtons[3].interactable = false;
+        }
+        else if (wisdom > baseWisdom)
+        {
+            minusButtons[3].interactable = true;
+        }
+        if (charisma <= baseCharisma)
+        {
+            minusButtons[4].interactable = false;
+        }
+        else if (charisma > baseCharisma)
+        {
+            minusButtons[4].interactable = true;
+        }
+        if (luck <= baseLuck)
+        {
+            minusButtons[5].interactable = false;
+        }
+        else if (luck > baseLuck)
+        {
+            minusButtons[5].interactable = true;
+        }
+        foreach (Button plusButton in plusButtons)
+        {
+            if (bonusPoint <= 0)
+            {
+                plusButton.interactable = false;
+            }
+            else
+            {
+                plusButton.interactable = true;
+            }
+        }
+
     }
 
     public void DefaultStats(int index)
@@ -94,14 +170,75 @@ public class CharacterCreation : MonoBehaviour
                 luck = 11;
                 break;
         }
+        baseStrength = strength;
+        baseDexterity = dexterity;
+        baseIntelligence = intelligence;
+        baseWisdom = wisdom;
+        baseCharisma = charisma;
+        baseLuck = luck;
+        bonusPoint = 5;
     }
 
-    public void BonusStats(int i)
+    public void BonusPlusStats(string statType)
     {
-        bonusPoint--;
-        if (bonusPoint <= 0)
+        int amount = 1;
+        switch (statType)
         {
-            // TODO 
+            case "Strength":
+                strength += amount;
+                bonusPoint -= amount;
+                break;
+            case "Dexterity":
+                dexterity += amount;
+                bonusPoint -= amount;
+                break;
+            case "Intelligence":
+                intelligence += amount;
+                bonusPoint -= amount;
+                break;
+            case "Wisdom":
+                wisdom += amount;
+                bonusPoint -= amount;
+                break;
+            case "Charisma":
+                charisma += amount;
+                bonusPoint -= amount;
+                break;
+            case "Luck":
+                luck += amount;
+                bonusPoint -= amount;
+                break;
+        }
+    }
+    public void BonusMinusStats(string statType)
+    {
+        int amount = -1;
+        switch (statType)
+        {
+            case "Strength":
+                strength += amount;
+                bonusPoint -= amount;
+                break;
+            case "Dexterity":
+                dexterity += amount;
+                bonusPoint -= amount;
+                break;
+            case "Intelligence":
+                intelligence += amount;
+                bonusPoint -= amount;
+                break;
+            case "Wisdom":
+                wisdom += amount;
+                bonusPoint -= amount;
+                break;
+            case "Charisma":
+                charisma += amount;
+                bonusPoint -= amount;
+                break;
+            case "Luck":
+                luck += amount;
+                bonusPoint -= amount;
+                break;
         }
     }
     public void TogglingClass(int amount)
