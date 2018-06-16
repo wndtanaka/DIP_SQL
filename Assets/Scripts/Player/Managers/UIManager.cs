@@ -31,6 +31,9 @@ namespace RPG
         private Image potraitFrame;
         [SerializeField]
         private CanvasGroup keybindMenu;
+        [SerializeField]
+        private CanvasGroup spellBook;
+
         private GameObject[] keybindButtons;
 
         private void Awake()
@@ -42,9 +45,6 @@ namespace RPG
         void Start()
         {
             healthStat = targetFrame.GetComponentInChildren<Stat>();
-            SetUsable(actionButtons[0], SpellBook.Instance.GetSpell("Fireball"));
-            SetUsable(actionButtons[1], SpellBook.Instance.GetSpell("Frostbolt"));
-            SetUsable(actionButtons[2], SpellBook.Instance.GetSpell("Lightning Bolt"));
         }
 
         // Update is called once per frame
@@ -56,7 +56,11 @@ namespace RPG
             }
             if (Input.GetKeyDown(KeyCode.Escape))
             {
-                OpenCloseMenu();
+                OpenClose(keybindMenu);
+            }
+            if (Input.GetKeyDown(KeyCode.P))
+            {
+                OpenClose(spellBook);
             }
         }
 
@@ -95,12 +99,7 @@ namespace RPG
                 clickable.MyStackText.color = new Color(0, 0, 0, 0);
             }
         }
-        public void OpenCloseMenu()
-        {
-            keybindMenu.alpha = keybindMenu.alpha > 0 ? 0 : 1;
-            keybindMenu.blocksRaycasts = keybindMenu.blocksRaycasts == true ? false : true;
-            Time.timeScale = Time.timeScale > 0 ? 0 : 1;
-        }
+
         public void UpdateKeyText(string key, KeyCode code)
         {
             Text tmp = Array.Find(keybindButtons, x => x.name == key).GetComponentInChildren<Text>();
@@ -112,11 +111,11 @@ namespace RPG
             Array.Find(actionButtons, x => x.gameObject.name == buttonName).MyButton.onClick.Invoke();
         }
 
-        public void SetUsable(ActionButton btn, IUseable useable)
+        public void OpenClose(CanvasGroup canvasGroup)
         {
-            btn.MyButton.image.sprite = useable.MyIcon;
-            btn.MyButton.image.color = Color.white;
-            btn.MyUseable = useable;
+            canvasGroup.alpha = canvasGroup.alpha > 0 ? 0 : 1;
+            canvasGroup.blocksRaycasts = canvasGroup.blocksRaycasts == true ? false : true;
+            Time.timeScale = Time.timeScale > 0 ? 0 : 1;
         }
     }
 }

@@ -12,6 +12,22 @@ namespace RPG
 
         public Button MyButton { get; private set; }
 
+        public Image MyIcon
+        {
+            get
+            {
+                return icon;
+            }
+
+            set
+            {
+                icon = value;
+            }
+        }
+
+        [SerializeField]
+        private Image icon;
+
         private void Start()
         {
             MyButton = GetComponent<Button>();
@@ -20,7 +36,13 @@ namespace RPG
 
         public void OnPointerClick(PointerEventData eventData)
         {
-
+            if (eventData.button == PointerEventData.InputButton.Left)
+            {
+                if (HandScript.Instance.MyMoveable != null && HandScript.Instance.MyMoveable is IUseable)
+                {
+                    SetUsable(HandScript.Instance.MyMoveable as IUseable);
+                }
+            }
         }
 
         public void OnClick()
@@ -29,6 +51,18 @@ namespace RPG
             {
                 MyUseable.Use();
             }
+        }
+
+        public void SetUsable(IUseable useable)
+        {
+            this.MyUseable = useable;
+            UpdateVisual();
+        }
+
+        public void UpdateVisual()
+        {
+            MyIcon.sprite = HandScript.Instance.Put().MyIcon;
+            MyIcon.color = Color.white;
         }
     }
 }

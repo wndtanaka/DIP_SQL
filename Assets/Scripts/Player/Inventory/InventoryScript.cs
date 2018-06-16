@@ -18,6 +18,9 @@ namespace RPG
                 return instance;
             }
         }
+
+        private SlotScript fromSlot;
+
         List<Bag> bags = new List<Bag>();
 
         [SerializeField]
@@ -30,6 +33,24 @@ namespace RPG
             get
             {
                 return bags.Count < 5;
+            }
+        }
+
+        public SlotScript FromSlot
+        {
+            get
+            {
+                return fromSlot;
+            }
+
+            set
+            {
+                fromSlot = value;
+                if (value != null)
+                {
+                    fromSlot.MyIcon.color = Color.grey;
+                }
+                fromSlot = value;
             }
         }
 

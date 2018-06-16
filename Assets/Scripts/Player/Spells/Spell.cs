@@ -4,7 +4,7 @@ using UnityEngine;
 namespace RPG
 {
     [System.Serializable]
-    public class Spell : IUseable
+    public class Spell : IUseable, IMoveable
     {
         [SerializeField]
         string name;

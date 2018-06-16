@@ -35,14 +35,11 @@ namespace RPG
 
         private int exitIndex = 2;
 
-        private SpellBook spellBook;
-
         public Transform MyTarget { get; set; }
 
         protected override void Start()
         {
             base.Start();
-            spellBook = GetComponent<SpellBook>();
             mana.Initialize(startMana, startMana);
         }
         protected override void Update()
@@ -97,7 +94,7 @@ namespace RPG
         IEnumerator Attack(string spellName)
         {
             Transform currentTarget = MyTarget;
-            Spell newSpell = spellBook.CastSpell(spellName);
+            Spell newSpell = SpellBook.Instance.CastSpell(spellName);
             isAttacking = true;
             anim.SetBool("Attack", isAttacking);
             yield return new WaitForSeconds(newSpell.CastTime);
@@ -142,7 +139,7 @@ namespace RPG
         }
         public override void StopAttack()
         {
-            spellBook.StopCasting();
+            SpellBook.Instance.StopCasting();
             base.StopAttack();
         }
     }

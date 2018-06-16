@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace RPG
 {
-    public abstract class Item : ScriptableObject
+    public abstract class Item : ScriptableObject, IMoveable
     {
         [SerializeField]
         Sprite icon;

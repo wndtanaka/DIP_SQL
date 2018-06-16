@@ -6,10 +6,6 @@ namespace RPG
 {
     public interface IUseable
     {
-        Sprite MyIcon
-        {
-            get;
-        }
         void Use();
     }
 }
