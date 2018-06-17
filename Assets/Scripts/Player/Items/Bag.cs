@@ -13,6 +13,8 @@ namespace RPG
 
         public BagScript MyBagScript { get; set; }
 
+        public BagButton MyBagButton { get; set; }
+
         public int Slots
         {
             get
@@ -32,8 +34,18 @@ namespace RPG
                 Remove();
                 MyBagScript = Instantiate(bagPrefab, InventoryScript.Instance.transform).GetComponent<BagScript>();
                 MyBagScript.AddSlots(slots);
-                InventoryScript.Instance.AddBag(this);
+
+                if (MyBagButton == null)
+                {
+                    InventoryScript.Instance.AddBag(this);
+
+                }
+                else
+                {
+                    InventoryScript.Instance.AddBag(this, MyBagButton);
+                }
                 MyBagScript.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+
             }
         }
     }

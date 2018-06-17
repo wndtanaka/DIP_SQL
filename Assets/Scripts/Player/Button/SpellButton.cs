@@ -14,7 +14,7 @@ namespace RPG
         {
             if (eventData.button == PointerEventData.InputButton.Left)
             {
-                HandScript.Instance.TakeMoveable(SpellBook.Instance.GetSpell(spellName));
+                HandScript.MyInstance.TakeMoveable(SpellBook.Instance.GetSpell(spellName));
             }
         }
     }

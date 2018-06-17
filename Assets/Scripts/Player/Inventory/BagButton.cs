@@ -36,10 +36,46 @@ namespace RPG
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            if (bag != null)
+            if (eventData.button == PointerEventData.InputButton.Left)
             {
-                bag.MyBagScript.OpenClose();
+                if (InventoryScript.Instance.FromSlot != null && HandScript.MyInstance.MyMoveable != null && HandScript.MyInstance.MyMoveable is Bag)
+                {
+                    if (MyBag != null)
+                    {
+                        InventoryScript.Instance.SwapBags(MyBag, HandScript.MyInstance.MyMoveable as Bag);
+                    }
+                    else
+                    {
+                        Bag tmp = (Bag)HandScript.MyInstance.MyMoveable;
+                        tmp.MyBagButton = this;
+                        tmp.Use();
+                        MyBag = tmp;
+                        HandScript.MyInstance.Drop();
+                        InventoryScript.Instance.FromSlot = null;
+                    }
+                }
+                else if (Input.GetKey(KeyCode.LeftShift))
+                {
+                    HandScript.MyInstance.TakeMoveable(MyBag);
+                }
+
+                else if (bag != null)
+                {
+                    bag.MyBagScript.OpenClose();
+                }
             }
+        }
+
+        public void RemoveBag()
+        {
+            InventoryScript.Instance.RemoveBag(MyBag);
+            MyBag.MyBagButton = null;
+
+            foreach (Item item in MyBag.MyBagScript.GetItems())
+            {
+                InventoryScript.Instance.AddItem(item);
+            }
+            MyBag = null;
         }
     }
 }

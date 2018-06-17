@@ -6,9 +6,16 @@ using UnityEngine.EventSystems;
 
 namespace RPG
 {
-    public class ActionButton : MonoBehaviour, IPointerClickHandler
+    public class ActionButton : MonoBehaviour, IPointerClickHandler, IClickable
     {
         public IUseable MyUseable { get; set; }
+
+        [SerializeField]
+        private Text stackSize;
+
+        private Stack<IUseable> useables = new Stack<IUseable>();
+
+        private int count;
 
         public Button MyButton { get; private set; }
 
@@ -25,6 +32,22 @@ namespace RPG
             }
         }
 
+        public int MyCount
+        {
+            get
+            {
+                return count;
+            }
+        }
+
+        public Text MyStackText
+        {
+            get
+            {
+                return stackSize;
+            }
+        }
+
         [SerializeField]
         private Image icon;
 
@@ -32,37 +55,74 @@ namespace RPG
         {
             MyButton = GetComponent<Button>();
             MyButton.onClick.AddListener(OnClick);
+            InventoryScript.Instance.onItemCountChanged += new ItemCountChanged(UpdateItemCount);
         }
 
         public void OnPointerClick(PointerEventData eventData)
         {
             if (eventData.button == PointerEventData.InputButton.Left)
             {
-                if (HandScript.Instance.MyMoveable != null && HandScript.Instance.MyMoveable is IUseable)
+                if (HandScript.MyInstance.MyMoveable != null && HandScript.MyInstance.MyMoveable is IUseable)
                 {
-                    SetUsable(HandScript.Instance.MyMoveable as IUseable);
+                    SetUsable(HandScript.MyInstance.MyMoveable as IUseable);
                 }
             }
         }
 
         public void OnClick()
         {
-            if (MyUseable != null)
+            if (HandScript.MyInstance.MyMoveable == null)
             {
-                MyUseable.Use();
+                if (MyUseable != null)
+                {
+                    MyUseable.Use();
+                }
+                if (useables != null && useables.Count > 0)
+                {
+                    useables.Peek().Use();
+                }
             }
         }
 
         public void SetUsable(IUseable useable)
         {
-            this.MyUseable = useable;
+            if (useable is Item)
+            {
+                useables = InventoryScript.Instance.GetUseables(useable);
+                count = useables.Count;
+                InventoryScript.Instance.FromSlot.MyIcon.color = Color.white;
+                InventoryScript.Instance.FromSlot = null;
+            }
+            else
+            {
+                this.MyUseable = useable;
+            }
             UpdateVisual();
         }
 
         public void UpdateVisual()
         {
-            MyIcon.sprite = HandScript.Instance.Put().MyIcon;
+            MyIcon.sprite = HandScript.MyInstance.Put().MyIcon;
             MyIcon.color = Color.white;
+
+            if (count > 1)
+            {
+                UIManager.Instance.UpdateStackSize(this);
+            }
+        }
+
+        public void UpdateItemCount(Item item)
+        {
+            // if item is the same as we have one this button
+            if (item is IUseable && useables.Count > 0)
+            {
+                if (useables.Peek().GetType() == item.GetType())
+                {
+                    useables = InventoryScript.Instance.GetUseables(item as IUseable);
+                    count = useables.Count;
+                    UIManager.Instance.UpdateStackSize(this);
+                }
+            }
         }
     }
 }

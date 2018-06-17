@@ -14,11 +14,14 @@ namespace RPG
         [SerializeField]
         private Text stackSize;
 
+        // reference which bag that this slot belong to
+        public BagScript MyBag { get; set; }
+
         public bool IsEmpty
         {
             get
             {
-                return items.Count == 0;
+                return MyItems.Count == 0;
             }
         }
 
@@ -40,7 +43,7 @@ namespace RPG
             {
                 if (!IsEmpty)
                 {
-                    return items.Peek();
+                    return MyItems.Peek();
                 }
                 return null;
             }
@@ -63,7 +66,7 @@ namespace RPG
         {
             get
             {
-                return items.Count;
+                return MyItems.Count;
             }
         }
 
@@ -75,16 +78,24 @@ namespace RPG
             }
         }
 
+        public ObservableStack<Item> MyItems
+        {
+            get
+            {
+                return items;
+            }
+        }
+
         private void Awake()
         {
-            items.OnPop += new UpdateStackEvent(UpdateSlot);
-            items.OnPush += new UpdateStackEvent(UpdateSlot);
-            items.OnClear += new UpdateStackEvent(UpdateSlot);
+            MyItems.OnPop += new UpdateStackEvent(UpdateSlot);
+            MyItems.OnPush += new UpdateStackEvent(UpdateSlot);
+            MyItems.OnClear += new UpdateStackEvent(UpdateSlot);
         }
 
         public bool AddItem(Item item)
         {
-            items.Push(item);
+            MyItems.Push(item);
             icon.sprite = item.MyIcon;
             icon.color = Color.white;
             item.MySlot = this;
@@ -114,7 +125,16 @@ namespace RPG
         {
             if (!IsEmpty)
             {
-                items.Pop();
+                InventoryScript.Instance.OnItemCountChanged(MyItems.Pop());
+            }
+        }
+
+        public void Clear()
+        {
+            if (MyItems.Count > 0)
+            {
+                InventoryScript.Instance.OnItemCountChanged(MyItems.Pop());
+                MyItems.Clear();
             }
         }
 
@@ -125,15 +145,35 @@ namespace RPG
                 // if we dont have something
                 if (InventoryScript.Instance.FromSlot == null && !IsEmpty)
                 {
-                    HandScript.Instance.TakeMoveable(MyItem as IMoveable);
-                    InventoryScript.Instance.FromSlot = this;
+                    if (HandScript.MyInstance.MyMoveable != null && HandScript.MyInstance.MyMoveable is Bag)
+                    {
+                        if (MyItem is Bag)
+                        {
+                            InventoryScript.Instance.SwapBags(HandScript.MyInstance.MyMoveable as Bag, MyItem as Bag);
+                        }
+                    }
+                    else
+                    {
+                        HandScript.MyInstance.TakeMoveable(MyItem as IMoveable);
+                        InventoryScript.Instance.FromSlot = this;
+                    }
+                }
+                else if (InventoryScript.Instance.FromSlot == null && IsEmpty && (HandScript.MyInstance.MyMoveable is Bag))
+                {
+                    Bag bag = (Bag)HandScript.MyInstance.MyMoveable;
+                    if (bag.MyBagScript != MyBag && InventoryScript.Instance.MyEmptySlotCount - bag.Slots > 0)
+                    {
+                        AddItem(bag);
+                        bag.MyBagButton.RemoveBag();
+                        HandScript.MyInstance.Drop();
+                    }
                 }
                 // if we have something
                 else if (InventoryScript.Instance.FromSlot != null)
                 {
-                    if (PutItemBack() || SwapItems(InventoryScript.Instance.FromSlot) || AddItems(InventoryScript.Instance.FromSlot.items))
+                    if (PutItemBack() || MergeItems(InventoryScript.Instance.FromSlot) || SwapItems(InventoryScript.Instance.FromSlot) || AddItems(InventoryScript.Instance.FromSlot.MyItems))
                     {
-                        HandScript.Instance.Drop();
+                        HandScript.MyInstance.Drop();
                         InventoryScript.Instance.FromSlot = null;
                     }
                 }
@@ -152,9 +192,9 @@ namespace RPG
         }
         public bool StackItem(Item item)
         {
-            if (!IsEmpty && item.name == MyItem.name && items.Count < MyItem.MyStackSize)
+            if (!IsEmpty && item.name == MyItem.name && MyItems.Count < MyItem.MyStackSize)
             {
-                items.Push(item);
+                MyItems.Push(item);
                 item.MySlot = this;
                 return true;
             }
@@ -178,22 +218,43 @@ namespace RPG
             if (from.MyItem.GetType() != MyItem.GetType() || from.MyCount + MyCount > MyItem.MyStackSize)
             {
                 // copy all the items we need to swap from A
-                ObservableStack<Item> tmpFrom = new ObservableStack<Item>(from.items);
+                ObservableStack<Item> tmpFrom = new ObservableStack<Item>(from.MyItems);
                 // clear slot A
-                from.items.Clear();
+                from.MyItems.Clear();
                 // all items from slot b and copy them into a
-                from.AddItems(items);
+                from.AddItems(MyItems);
                 // clear B
-                items.Clear();
+                MyItems.Clear();
                 // move items from A to B
                 AddItems(tmpFrom);
                 return true;
             }
             return false;
         }
+
+        private bool MergeItems(SlotScript from)
+        {
+            if (IsEmpty)
+            {
+                return false;
+            }
+            if (from.MyItem.GetType() == MyItem.GetType() && !IsFull)
+            {
+                // how many free slots
+                int free = MyItem.MyStackSize - MyCount;
+
+                for (int i = 0; i < free; i++)
+                {
+                    AddItem(from.MyItems.Pop());
+                }
+                return true;
+            }
+            return false;
+        }
+
         void UpdateSlot()
         {
-            UIManager.Instance.UpdateStacksSize(this);
+            UIManager.Instance.UpdateStackSize(this);
         }
     }
 }

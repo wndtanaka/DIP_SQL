@@ -4,8 +4,11 @@ using UnityEngine;
 
 namespace RPG
 {
+    public delegate void ItemCountChanged(Item item);
     public class InventoryScript : MonoBehaviour
     {
+        public event ItemCountChanged onItemCountChanged;
+
         private static InventoryScript instance;
         public static InventoryScript Instance
         {
@@ -33,6 +36,40 @@ namespace RPG
             get
             {
                 return bags.Count < 5;
+            }
+        }
+
+        public int MyEmptySlotCount
+        {
+            get
+            {
+                int count = 0;
+                foreach (Bag bag in bags)
+                {
+                    count += bag.MyBagScript.MyEmptySlotCount;
+                }
+                return count;
+            }
+        }
+
+        public int MyTotalSlotCount
+        {
+            get
+            {
+                int count = 0;
+                foreach (Bag bag in bags)
+                {
+                    count += bag.MyBagScript.MySlots.Count;
+                }
+                return count;
+            }
+        }
+
+        public int MyFullSlotCount
+        {
+            get
+            {
+                return MyTotalSlotCount - MyEmptySlotCount;
             }
         }
 
@@ -69,6 +106,12 @@ namespace RPG
                 bag.Initialize(16);
                 bag.Use();
             }
+            if (Input.GetKeyDown(KeyCode.J))
+            {
+                Bag bag = (Bag)Instantiate(items[0]);
+                bag.Initialize(8);
+                AddItem(bag);
+            }
             if (Input.GetKeyDown(KeyCode.K))
             {
                 Bag bag = (Bag)Instantiate(items[0]);
@@ -89,8 +132,44 @@ namespace RPG
                 {
                     bagButton.MyBag = bag;
                     bags.Add(bag);
+                    bag.MyBagButton = bagButton;
                     break;
                 }
+            }
+        }
+        public void AddBag(Bag bag, BagButton bagButton)
+        {
+            bags.Add(bag);
+            bagButton.MyBag = bag;
+        }
+
+        public void RemoveBag(Bag bag)
+        {
+            bags.Remove(bag);
+            Destroy(bag.MyBagScript.gameObject);
+        }
+
+        public void SwapBags(Bag oldBag, Bag newBag)
+        {
+            int newSlotCount = (MyTotalSlotCount - oldBag.Slots) + newBag.Slots;
+
+            if (newSlotCount - MyFullSlotCount >= 0)
+            {
+                //do swap
+                List<Item> bagItems = oldBag.MyBagScript.GetItems();
+                RemoveBag(oldBag);
+                newBag.MyBagButton = oldBag.MyBagButton;
+                newBag.Use();
+                foreach (Item item in bagItems)
+                {
+                    if (item != newBag) // no duplicates
+                    {
+                        AddItem(item);
+                    }
+                }
+                AddItem(oldBag);
+                HandScript.MyInstance.Drop();
+                Instance.fromSlot = null;
             }
         }
 
@@ -112,6 +191,7 @@ namespace RPG
             {
                 if (bag.MyBagScript.AddItem(item))
                 {
+                    OnItemCountChanged(item);
                     return;
                 }
             }
@@ -125,6 +205,7 @@ namespace RPG
                 {
                     if (slots.StackItem(item))
                     {
+                        OnItemCountChanged(item);
                         return true;
                     }
                 }
@@ -143,6 +224,32 @@ namespace RPG
                 {
                     bag.MyBagScript.OpenClose();
                 }
+            }
+        }
+        public Stack<IUseable> GetUseables(IUseable type)
+        {
+            Stack<IUseable> useables = new Stack<IUseable>();
+            foreach (Bag bag in bags)
+            {
+                foreach (SlotScript slot in bag.MyBagScript.MySlots)
+                {
+                    if (!slot.IsEmpty && slot.MyItem.GetType() == type.GetType())
+                    {
+                        foreach (Item item in slot.MyItems)
+                        {
+                            useables.Push(item as IUseable);
+                        }
+                    }
+                }
+            }
+            return useables;
+        }
+
+        public void OnItemCountChanged(Item item)
+        {
+            if (onItemCountChanged != null)
+            {
+                onItemCountChanged.Invoke(item);
             }
         }
     }

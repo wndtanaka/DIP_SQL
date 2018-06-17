@@ -81,19 +81,20 @@ namespace RPG
         {
             healthStat.MyCurrentValue = health;
         }
-        public void UpdateStacksSize(IClickable clickable)
+        public void UpdateStackSize(IClickable clickable)
         {
-            if (clickable.MyCount > 1)
+            if (clickable.MyCount > 1) //If our slot has more than one item on it
             {
                 clickable.MyStackText.text = clickable.MyCount.ToString();
                 clickable.MyStackText.color = Color.white;
                 clickable.MyIcon.color = Color.white;
             }
-            else
+            else //If it only has 1 item on it
             {
                 clickable.MyStackText.color = new Color(0, 0, 0, 0);
+                clickable.MyIcon.color = Color.white;
             }
-            if (clickable.MyCount == 0)
+            if (clickable.MyCount == 0) //If the slot is empty, then we need to hide the icon
             {
                 clickable.MyIcon.color = new Color(0, 0, 0, 0);
                 clickable.MyStackText.color = new Color(0, 0, 0, 0);
@@ -115,7 +116,6 @@ namespace RPG
         {
             canvasGroup.alpha = canvasGroup.alpha > 0 ? 0 : 1;
             canvasGroup.blocksRaycasts = canvasGroup.blocksRaycasts == true ? false : true;
-            Time.timeScale = Time.timeScale > 0 ? 0 : 1;
         }
     }
 }

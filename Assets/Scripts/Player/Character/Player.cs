@@ -85,7 +85,7 @@ namespace RPG
             #endregion
             foreach (string action in KeybindManager.Instance.ActionBinds.Keys)
             {
-                if (Input.GetKey(KeybindManager.Instance.ActionBinds[action]))
+                if (Input.GetKeyDown(KeybindManager.Instance.ActionBinds[action]))
                 {
                     UIManager.Instance.ClickActionButton(action);
                 }

@@ -28,16 +28,50 @@ namespace RPG
             }
         }
 
+        public int MyEmptySlotCount
+        {
+            get
+            {
+                int count = 0;
+
+                foreach (SlotScript slot in MySlots)
+                {
+                    if (slot.IsEmpty)
+                    {
+                        count++;
+                    }
+                }
+                return count;
+            }
+        }
+
         private void Awake()
         {
             canvasGroup = GetComponent<CanvasGroup>();
-           }
+        }
+
+        public List<Item> GetItems()
+        {
+            List<Item> items = new List<Item>();
+            foreach (SlotScript slot in slots)
+            {
+                if (!slot.IsEmpty)
+                {
+                    foreach (Item item in slot.MyItems)
+                    {
+                        items.Add(item);
+                    }
+                }
+            }
+            return items;
+        }
 
         public void AddSlots(int slotCount)
         {
             for (int i = 0; i < slotCount; i++)
             {
-                SlotScript slot =  Instantiate(slotPrefab, transform).GetComponent<SlotScript>();
+                SlotScript slot = Instantiate(slotPrefab, transform).GetComponent<SlotScript>();
+                slot.MyBag = this;
                 slots.Add(slot);
             }
         }
