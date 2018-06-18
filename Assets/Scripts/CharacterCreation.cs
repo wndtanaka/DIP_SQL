@@ -9,12 +9,17 @@ public class CharacterCreation : MonoBehaviour
 {
     #region Variables
     public InputField charName;
-    public string[] charClass = new string[] { "Warrior", "Rogue", "Mage", "Priest" };
+    public string[] charClass = new string[] { "Samurai", "Ninja", "Sensei", "Geisha" };
     public Text charClassText;
+    public GameObject[] characters;
+    public Transform customChar;
 
     private int index = 0;
+    private int colorIndex = 0;
     private string characterClass;
     private const int newLevel = 1;
+
+    public static string charId;
 
     #region Stats
 
@@ -59,6 +64,10 @@ public class CharacterCreation : MonoBehaviour
         charClassText.text = charClass[0];
         characterClass = charClass[0];
         DefaultStats(0);
+        CharacterCustomisation();
+        characters[0].SetActive(true);
+        customChar = characters[0].transform.GetChild(0);
+        charId = index.ToString() + colorIndex;
     }
 
     void Update()
@@ -137,7 +146,7 @@ public class CharacterCreation : MonoBehaviour
     {
         switch (charClass[index])
         {
-            case "Warrior":
+            case "Samurai":
                 strength = 17;
                 dexterity = 8;
                 intelligence = 5;
@@ -145,7 +154,7 @@ public class CharacterCreation : MonoBehaviour
                 charisma = 9;
                 luck = 10;
                 break;
-            case "Rogue":
+            case "Ninja":
                 strength = 9;
                 dexterity = 16;
                 intelligence = 7;
@@ -153,7 +162,7 @@ public class CharacterCreation : MonoBehaviour
                 charisma = 6;
                 luck = 12;
                 break;
-            case "Mage":
+            case "Sensei":
                 strength = 6;
                 dexterity = 6;
                 intelligence = 18;
@@ -161,13 +170,21 @@ public class CharacterCreation : MonoBehaviour
                 charisma = 12;
                 luck = 8;
                 break;
-            case "Priest":
+            case "Geisha":
                 strength = 4;
                 dexterity = 4;
                 intelligence = 16;
                 wisdom = 13;
                 charisma = 12;
                 luck = 11;
+                break;
+            default:
+                strength = 17;
+                dexterity = 8;
+                intelligence = 5;
+                wisdom = 11;
+                charisma = 9;
+                luck = 10;
                 break;
         }
         baseStrength = strength;
@@ -244,7 +261,7 @@ public class CharacterCreation : MonoBehaviour
     public void TogglingClass(int amount)
     {
         index += amount;
-        if (index <= 0)
+        if (index < 0)
         {
             index = charClass.Length - 1;
             charClassText.text = charClass[index];
@@ -259,7 +276,9 @@ public class CharacterCreation : MonoBehaviour
             charClassText.text = charClass[index];
         }
         characterClass = charClass[index];
+        charId = index.ToString() + colorIndex;
         DefaultStats(index);
+        CharacterCustomisation();
     }
 
     // this function is for create the customised character
@@ -282,7 +301,9 @@ public class CharacterCreation : MonoBehaviour
         // match charClass_Post in PHP with charClass
         createCharForm.AddField("charClass_Post", characterClass);
         // match charLevel_Post in PHP with charLevel
-        createCharForm.AddField("charLevel_Post", newLevel);
+        createCharForm.AddField("charLevel_Post", newLevel);        
+        // match charDd_Post in PHP with charLevel
+        createCharForm.AddField("charId_Post", charId);
         // create a new WWW() taking crteateCharURL and createCharForm
         WWW www = new WWW(createCharURL, createCharForm);
         // return www
@@ -294,5 +315,70 @@ public class CharacterCreation : MonoBehaviour
     public void CancelButton()
     {
         SceneManager.LoadScene("CharacterSelection");
+    }
+
+    public void CharacterCustomisation()
+    {
+        for (int i = 0; i < charClass.Length; i++)
+        {
+            characters[i].SetActive(false);
+            if (index == i)
+            {
+                characters[i].SetActive(true);
+            }
+        }
+    }
+
+    public void CharacterColor(int number)
+    {
+        colorIndex += number;
+
+        if (colorIndex < 0)
+        {
+            colorIndex = 2;
+        }
+        else if (colorIndex > 2)
+        {
+            colorIndex = 0;
+        }
+        for (int i = 0; i < charClass.Length; i++)
+        {
+            if (index == i)
+            {
+                if (colorIndex == 0)
+                {
+                    for (int j = 0; j <= 2; j++)
+                    {
+                        customChar = characters[index].transform.GetChild(j);
+                        customChar.gameObject.SetActive(false);
+                    }
+                    customChar = characters[index].transform.GetChild(colorIndex);
+                    customChar.gameObject.SetActive(true);
+                    charId = index.ToString() + colorIndex;
+                }
+                if (colorIndex == 1)
+                {
+                    for (int j = 0; j <= 2; j++)
+                    {
+                        customChar = characters[index].transform.GetChild(j);
+                        customChar.gameObject.SetActive(false);
+                    }
+                    customChar = characters[index].transform.GetChild(colorIndex);
+                    customChar.gameObject.SetActive(true);
+                    charId = index.ToString() + colorIndex;
+                }
+                if (colorIndex == 2)
+                {
+                    for (int j = 0; j <= 2; j++)
+                    {
+                        customChar = characters[index].transform.GetChild(j);
+                        customChar.gameObject.SetActive(false);
+                    }
+                    customChar = characters[index].transform.GetChild(colorIndex);
+                    customChar.gameObject.SetActive(true);
+                    charId = index.ToString() + colorIndex;
+                }
+            }
+        }
     }
 }

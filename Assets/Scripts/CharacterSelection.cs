@@ -37,6 +37,8 @@ public class CharacterSelection : MonoBehaviour
             this.charLevel = charLevel;
         }
     }
+    [SerializeField]
+    CharacterID[] characterId;
 
     #region Characters Container
     private string characterOneName;
@@ -54,6 +56,11 @@ public class CharacterSelection : MonoBehaviour
     private string characterFiveName;
     private string characterFiveClass;
     private string characterFiveLevel;
+    private string characterOneId;
+    private string characterTwoId;
+    private string characterThreeId;
+    private string characterFourId;
+    private string characterFiveId;
     #endregion
 
     public RenderTexture[] rend;
@@ -106,7 +113,7 @@ public class CharacterSelection : MonoBehaviour
         WWW www = new WWW(characterSelectionURL, createCharForm);
         // return www
         yield return www;
-        //Debug.Log(www.text);
+        Debug.Log(www.text);
         string[] characters = www.text.Split('#');
         characterList = new string[characters.Length - 1];
         for (int i = 0; i < characterList.Length; i++)
@@ -115,6 +122,7 @@ public class CharacterSelection : MonoBehaviour
         }
         CharacterCount();
         SetCharacters();
+        ShowCharacter();
         isLoaded = true;
     }
 
@@ -141,6 +149,7 @@ public class CharacterSelection : MonoBehaviour
                 charName.text = charOne[0];
                 charClass.text = charOne[1];
                 charLevel.text = "Level: " + charOne[2];
+                characterOneId = charOne[3];
                 characterOneName = charName.text;
                 characterOneClass = charClass.text;
                 characterOneLevel = charLevel.text;
@@ -159,6 +168,7 @@ public class CharacterSelection : MonoBehaviour
                 charName.text = charTwo[0];
                 charClass.text = charTwo[1];
                 charLevel.text = "Level: " + charTwo[2];
+                characterTwoId = charTwo[3];
                 characterTwoName = charName.text;
                 characterTwoClass = charClass.text;
                 characterTwoLevel = charLevel.text;
@@ -177,6 +187,7 @@ public class CharacterSelection : MonoBehaviour
                 charName.text = charThree[0];
                 charClass.text = charThree[1];
                 charLevel.text = "Level: " + charThree[2];
+                characterThreeId = charThree[3];
                 characterThreeName = charName.text;
                 characterThreeClass = charClass.text;
                 characterThreeLevel = charLevel.text;
@@ -195,6 +206,7 @@ public class CharacterSelection : MonoBehaviour
                 charName.text = charFour[0];
                 charClass.text = charFour[1];
                 charLevel.text = "Level: " + charFour[2];
+                characterFourId = charFour[3];
                 characterFourName = charName.text;
                 characterFourClass = charClass.text;
                 characterFourLevel = charLevel.text;
@@ -213,11 +225,13 @@ public class CharacterSelection : MonoBehaviour
                 charName.text = charFive[0];
                 charClass.text = charFive[1];
                 charLevel.text = "Level: " + charFive[2];
+                characterFiveId = charFive[3];
                 characterFiveName = charName.text;
                 characterFiveClass = charClass.text;
                 characterFiveLevel = charLevel.text;
             }
         }
+        Debug.Log(characterOneId);
     }
 
     public void GetCharacters()
@@ -262,10 +276,74 @@ public class CharacterSelection : MonoBehaviour
     public void SelectCharacter()
     {
         GameManager.SelectedCharacterName = selectedCharacterName;
-        if (selectedCharacterName == null)
+        if (selectedCharacterName != null)
         {
-            Debug.Log("eew");
+            SceneManager.LoadScene("RPG");
         }
-        SceneManager.LoadScene("RPG");
+    }
+
+    public void ShowCharacter()
+    {
+        if (characterOneId != null)
+        {
+            CharacterID idOne = System.Array.Find(characterId, c => c.CharId == characterOneId);
+            GameObject goOne = Instantiate(idOne.CharacterPrefab);
+            goOne.transform.SetParent(GameObject.Find("Character One").transform);
+            goOne.transform.position = GameObject.Find("Character One").transform.position;
+        }
+
+        if (characterTwoId != null)
+        {
+            CharacterID idTwo = System.Array.Find(characterId, c => c.CharId == characterTwoId);
+            GameObject goTwo = Instantiate(idTwo.CharacterPrefab);
+            goTwo.transform.SetParent(GameObject.Find("Character Two").transform);
+            goTwo.transform.position = GameObject.Find("Character Two").transform.position;
+        }
+        if (characterThreeId != null)
+        {
+            CharacterID idThree = System.Array.Find(characterId, c => c.CharId == characterThreeId);
+            GameObject goThree = Instantiate(idThree.CharacterPrefab);
+            goThree.transform.SetParent(GameObject.Find("Character Three").transform);
+            goThree.transform.position = GameObject.Find("Character Three").transform.position;
+        }
+        if (characterFourId != null)
+        {
+            CharacterID idFour = System.Array.Find(characterId, c => c.CharId == characterFourId);
+            GameObject goFour = Instantiate(idFour.CharacterPrefab);
+            goFour.transform.SetParent(GameObject.Find("Character Four").transform);
+            goFour.transform.position = GameObject.Find("Character Four").transform.position;
+        }
+        if (characterFiveId != null)
+        {
+            CharacterID idFive = System.Array.Find(characterId, c => c.CharId == characterFiveId);
+            GameObject goFive = Instantiate(idFive.CharacterPrefab);
+            goFive.transform.SetParent(GameObject.Find("Character Five").transform);
+            goFive.transform.position = GameObject.Find("Character Five").transform.position;
+        }
+    }
+
+    [System.Serializable]
+    public class CharacterID
+    {
+        [SerializeField]
+        string charId;
+        [SerializeField]
+        GameObject characterPrefab;
+
+        public string CharId
+        {
+            get
+            {
+                return charId;
+            }
+        }
+
+        public GameObject CharacterPrefab
+        {
+            get
+            {
+                return characterPrefab;
+            }
+        }
     }
 }
