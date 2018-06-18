@@ -2,24 +2,37 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Interactable : MonoBehaviour
+namespace RPG
 {
-    [System.Serializable]
-    public class Action
+    public class Interactable : MonoBehaviour
     {
-        public Color color;
-        public Sprite sprite;
-        public string title;
-    }
-
-    public Action[] options;
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Tab))
+        [System.Serializable]
+        public class Action
         {
-            // tell the canvas to spawn a menu
+            //public Color color;
+            public Sprite sprite;
+            public string title;
+        }
+
+        public Action[] options;
+
+
+        private void Start()
+        {
             RadialMenuSpawner.Instance.SpawnMenu(this);
+        }
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                // tell the canvas to spawn a menu
+                RadialMenuSpawner.Instance.OpenClose();
+            }
+            if (Input.GetKeyDown(KeyCode.N))
+            {
+                // tell the canvas to spawn a menu
+                RadialMenuSpawner.Instance.OpenClose();
+            }
         }
     }
 }

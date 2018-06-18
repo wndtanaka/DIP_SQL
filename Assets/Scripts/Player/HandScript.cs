@@ -8,9 +8,7 @@ namespace RPG
 {
     public class HandScript : MonoBehaviour
     {
-        /// <summary>
-        /// Singleton instance of the handscript
-        /// </summary>
+        // Singleton instance of the handscript
         private static HandScript instance;
 
         public static HandScript MyInstance
@@ -26,30 +24,22 @@ namespace RPG
             }
         }
 
-        /// <summary>
-        /// The current moveable
-        /// </summary>
+        // The current moveable
         public IMoveable MyMoveable { get; set; }
 
-        /// <summary>
-        /// The icon of the item, that we acre moving around atm.
-        /// </summary>
+        // The icon of the item, that we acre moving around atm.
         private Image icon;
 
-        /// <summary>
-        /// An offset to move the icon away from the mouse
-        /// </summary>
+        // An offset to move the icon away from the mouse
         [SerializeField]
         private Vector3 offset;
 
-        // Use this for initialization
         void Start()
         {
             //Creates a reference to the image on the hand
             icon = GetComponent<Image>();
         }
 
-        // Update is called once per frame
         void Update()
         {
             //Makes sure that the icon follows the hand
@@ -58,10 +48,7 @@ namespace RPG
             DeleteItem();
         }
 
-        /// <summary>
-        /// Take a moveable in the hand, so that we can move it around
-        /// </summary>
-        /// <param name="moveable">The moveable to pick up</param>
+        // Take a moveable in the hand, so that we can move it around
         public void TakeMoveable(IMoveable moveable)
         {
             this.MyMoveable = moveable;
@@ -83,9 +70,7 @@ namespace RPG
             icon.color = new Color(0, 0, 0, 0);
         }
 
-        /// <summary>
-        /// Deletes an item from the inventory
-        /// </summary>
+        // Deletes an item from the inventory
         private void DeleteItem()
         {
             if (Input.GetMouseButton(0) && !EventSystem.current.IsPointerOverGameObject() && MyInstance.MyMoveable != null)

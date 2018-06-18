@@ -2,21 +2,32 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RadialMenuSpawner : MonoBehaviour
+namespace RPG
 {
-    public static RadialMenuSpawner Instance;
-    public RadialMenu menuPrefab;
-
-    private void Awake()
+    public class RadialMenuSpawner : MonoBehaviour
     {
-        Instance = this;
-    }
+        public static RadialMenuSpawner Instance;
+        public RadialMenu menuPrefab;
+        private CanvasGroup canvasGroup;
 
-    public void SpawnMenu(Interactable obj)
-    {
-        RadialMenu newMenu = Instantiate(menuPrefab);
-        newMenu.transform.SetParent(transform, false);
-        newMenu.transform.position = /*Input.mousePosition*/transform.position;
-        newMenu.SpawnButtons(obj);
+        private void Awake()
+        {
+            Instance = this;
+            canvasGroup = GetComponent<CanvasGroup>();
+        }
+
+        public void SpawnMenu(Interactable obj)
+        {
+            RadialMenu newMenu = Instantiate(menuPrefab);
+            newMenu.transform.SetParent(transform, false);
+            newMenu.transform.position = /*Input.mousePosition*/transform.position;
+            newMenu.SpawnButtons(obj);
+        }
+
+        public void OpenClose()
+        {
+            canvasGroup.alpha = canvasGroup.alpha > 0 ? 0 : 1;
+            canvasGroup.blocksRaycasts = canvasGroup.blocksRaycasts == true ? false : true;
+        }
     }
 }

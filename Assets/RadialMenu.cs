@@ -2,38 +2,42 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RadialMenu : MonoBehaviour
+namespace RPG
 {
-    public RadialButton buttonPrefab;
-    public RadialButton selected;
-
-    public void SpawnButtons(Interactable obj)
+    public class RadialMenu : MonoBehaviour
     {
-        for (int i = 0; i < obj.options.Length; i++)
+        public RadialButton buttonPrefab;
+        public RadialButton selected;
+        RadialButton newButton;
+
+        public void SpawnButtons(Interactable obj)
         {
-            RadialButton newButton = Instantiate(buttonPrefab);
-            newButton.transform.SetParent(transform, false);
-            float theta = (2 * Mathf.PI / obj.options.Length) * i;
-            float xPos = Mathf.Sin(theta);
-            float yPos = Mathf.Cos(theta);
-            newButton.transform.localPosition = new Vector3(xPos, yPos, 0) * 100f;
-            newButton.circle.color = obj.options[i].color;
-            newButton.icon.sprite = obj.options[i].sprite;
-            newButton.title = obj.options[i].title;
-            newButton.myMenu = this;
+            for (int i = 0; i < obj.options.Length; i++)
+            {
+                newButton = Instantiate(buttonPrefab);
+                newButton.transform.SetParent(transform, false);
+                float theta = (2 * Mathf.PI / obj.options.Length) * i;
+                float xPos = Mathf.Sin(theta);
+                float yPos = Mathf.Cos(theta);
+                newButton.transform.localPosition = new Vector3(xPos, yPos, 0) * 100f;
+                newButton.icon.sprite = obj.options[i].sprite;
+                newButton.title = obj.options[i].title;
+                newButton.icon.transform.localScale = new Vector3(1.7f, 1.7f, 1.7f);
+                newButton.myMenu = this;
+            }
+
         }
 
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyUp(KeyCode.Tab))
+        private void Update()
         {
-            if (selected)
+            if (Input.GetKeyUp(KeyCode.Tab))
             {
-                Debug.Log(selected.title + " was selected.");
+                if (selected)
+                {
+                    // TODO do selected
+                }
+                RadialMenuSpawner.Instance.OpenClose();
             }
-            Destroy(gameObject);
         }
     }
 }

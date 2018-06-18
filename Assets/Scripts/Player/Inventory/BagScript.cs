@@ -6,6 +6,19 @@ namespace RPG
 {
     public class BagScript : MonoBehaviour
     {
+        private static BagScript instance;
+        public static BagScript Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = FindObjectOfType<BagScript>();
+                }
+                return instance;
+            }
+        }
+
         [SerializeField]
         private GameObject slotPrefab;
         private CanvasGroup canvasGroup;

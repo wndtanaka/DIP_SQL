@@ -3,11 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System;
 
 namespace RPG
 {
     public class ActionButton : MonoBehaviour, IPointerClickHandler, IClickable
     {
+        private static ActionButton instance;
+        public static ActionButton Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = FindObjectOfType<ActionButton>();
+                }
+                return instance;
+            }
+        }
+
         public IUseable MyUseable { get; set; }
 
         [SerializeField]
