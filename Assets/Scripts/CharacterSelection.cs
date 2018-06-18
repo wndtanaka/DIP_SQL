@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class CharacterSelection : MonoBehaviour
 {
@@ -37,9 +38,31 @@ public class CharacterSelection : MonoBehaviour
         }
     }
 
-    public string characterName;
-    public string characterClass;
-    public int characterLevel;
+    #region Characters Container
+    private string characterOneName;
+    private string characterOneClass;
+    private string characterOneLevel;
+    private string characterTwoName;
+    private string characterTwoClass;
+    private string characterTwoLevel;
+    private string characterThreeName;
+    private string characterThreeClass;
+    private string characterThreeLevel;
+    private string characterFourName;
+    private string characterFourClass;
+    private string characterFourLevel;
+    private string characterFiveName;
+    private string characterFiveClass;
+    private string characterFiveLevel;
+    #endregion
+
+    public RenderTexture[] rend;
+    [SerializeField]
+    RawImage charTexture;
+
+    string selectedCharacterName;
+    string selectedCharacterClass;
+    string selectedCharacterLevel;
 
     public string[] characterList;
     public bool isLoaded;
@@ -70,7 +93,6 @@ public class CharacterSelection : MonoBehaviour
     {
         SceneManager.LoadScene("Login");
     }
-
 
     IEnumerator GetCharacterDetails()
     {
@@ -119,6 +141,10 @@ public class CharacterSelection : MonoBehaviour
                 charName.text = charOne[0];
                 charClass.text = charOne[1];
                 charLevel.text = "Level: " + charOne[2];
+                characterOneName = charName.text;
+                characterOneClass = charClass.text;
+                characterOneLevel = charLevel.text;
+
             }
             else if (i == 1)
             {
@@ -133,6 +159,10 @@ public class CharacterSelection : MonoBehaviour
                 charName.text = charTwo[0];
                 charClass.text = charTwo[1];
                 charLevel.text = "Level: " + charTwo[2];
+                characterTwoName = charName.text;
+                characterTwoClass = charClass.text;
+                characterTwoLevel = charLevel.text;
+
             }
             else if (i == 2)
             {
@@ -147,6 +177,10 @@ public class CharacterSelection : MonoBehaviour
                 charName.text = charThree[0];
                 charClass.text = charThree[1];
                 charLevel.text = "Level: " + charThree[2];
+                characterThreeName = charName.text;
+                characterThreeClass = charClass.text;
+                characterThreeLevel = charLevel.text;
+
             }
             else if (i == 3)
             {
@@ -161,12 +195,15 @@ public class CharacterSelection : MonoBehaviour
                 charName.text = charFour[0];
                 charClass.text = charFour[1];
                 charLevel.text = "Level: " + charFour[2];
+                characterFourName = charName.text;
+                characterFourClass = charClass.text;
+                characterFourLevel = charLevel.text;
+
             }
             else if (i == 4)
             {
                 if (characterList[i] == null)
                 {
-                    Debug.Log("ok");
                     return;
                 }
                 string[] charFive = characterList[i].Split('|');
@@ -176,12 +213,59 @@ public class CharacterSelection : MonoBehaviour
                 charName.text = charFive[0];
                 charClass.text = charFive[1];
                 charLevel.text = "Level: " + charFive[2];
+                characterFiveName = charName.text;
+                characterFiveClass = charClass.text;
+                characterFiveLevel = charLevel.text;
             }
         }
+    }
 
-
-
-
-
+    public void GetCharacters()
+    {
+        GameObject go = EventSystem.current.currentSelectedGameObject;
+        switch (go.name)
+        {
+            case "Character Button 1":
+                selectedCharacterName = characterOneName;
+                selectedCharacterClass = characterOneClass;
+                selectedCharacterLevel = characterOneLevel;
+                charTexture.texture = rend[0];
+                break;
+            case "Character Button 2":
+                selectedCharacterName = characterTwoName;
+                selectedCharacterClass = characterTwoClass;
+                selectedCharacterLevel = characterTwoLevel;
+                charTexture.texture = rend[1];
+                break;
+            case "Character Button 3":
+                selectedCharacterName = characterThreeName;
+                selectedCharacterClass = characterThreeClass;
+                selectedCharacterLevel = characterThreeLevel;
+                charTexture.texture = rend[2];
+                break;
+            case "Character Button 4":
+                selectedCharacterName = characterFourName;
+                selectedCharacterClass = characterFourClass;
+                selectedCharacterLevel = characterFourLevel;
+                charTexture.texture = rend[3];
+                break;
+            case "Character Button 5":
+                selectedCharacterName = characterFiveName;
+                selectedCharacterClass = characterFiveClass;
+                selectedCharacterLevel = characterFiveLevel;
+                charTexture.texture = rend[4];
+                break;
+            default:
+                break;
+        }
+    }
+    public void SelectCharacter()
+    {
+        GameManager.SelectedCharacterName = selectedCharacterName;
+        if (selectedCharacterName == null)
+        {
+            Debug.Log("eew");
+        }
+        SceneManager.LoadScene("RPG");
     }
 }

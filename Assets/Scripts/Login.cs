@@ -143,7 +143,7 @@ public class Login : MonoBehaviour
         WWW www = new WWW(loginURL, loginForm);
         // return www
         yield return www;
-        Debug.Log(www.text);
+        //Debug.Log(www.text);
         // if www.text equal to loginSuccess
         if (www.text == loginSuccess)
         {
