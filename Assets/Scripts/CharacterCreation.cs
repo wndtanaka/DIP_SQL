@@ -301,7 +301,7 @@ public class CharacterCreation : MonoBehaviour
         // match charClass_Post in PHP with charClass
         createCharForm.AddField("charClass_Post", characterClass);
         // match charLevel_Post in PHP with charLevel
-        createCharForm.AddField("charLevel_Post", newLevel);        
+        createCharForm.AddField("charLevel_Post", newLevel);
         // match charDd_Post in PHP with charLevel
         createCharForm.AddField("charId_Post", charId);
         // create a new WWW() taking crteateCharURL and createCharForm
@@ -380,5 +380,16 @@ public class CharacterCreation : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void RandomiseCharacter()
+    {
+        charClassText.text =  charClass[Random.Range(0, charClass.Length)];
+        index = Random.Range(0, charClass.Length);
+        colorIndex = Random.Range(0, charClass.Length);
+        DefaultStats(index);
+        characterClass = charClass[index];
+        CharacterColor(index);
+        CharacterCustomisation();
     }
 }
