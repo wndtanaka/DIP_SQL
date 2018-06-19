@@ -62,8 +62,10 @@ public class CharacterSelection : MonoBehaviour
     private string characterFourId;
     private string characterFiveId;
     #endregion
-
-    public RenderTexture[] rend;
+    [SerializeField]
+    GameObject[] characterRenderer;
+    [SerializeField]
+    RenderTexture[] rend;
     [SerializeField]
     RawImage charTexture;
 
@@ -272,13 +274,19 @@ public class CharacterSelection : MonoBehaviour
             default:
                 break;
         }
+        CharacterSnapShot(go.name);
     }
     public void SelectCharacter()
     {
+        Debug.Log(selectedCharacterName);
         GameManager.SelectedCharacterName = selectedCharacterName;
         if (selectedCharacterName != null)
         {
             SceneManager.LoadScene("RPG");
+        }
+        else
+        {
+            Debug.Log("Select Character");
         }
     }
 
@@ -320,6 +328,35 @@ public class CharacterSelection : MonoBehaviour
             goFive.transform.SetParent(GameObject.Find("Character Five").transform);
             goFive.transform.position = GameObject.Find("Character Five").transform.position;
         }
+    }
+
+    public void CharacterSnapShot(string name)
+    {
+        for (int i = 0; i < characterRenderer.Length; i++)
+        {
+            characterRenderer[i].SetActive(false);
+        }
+        switch (name)
+        {
+            case "Character Button 1":
+                characterRenderer[0].SetActive(true);
+                break;
+            case "Character Button 2":
+                characterRenderer[1].SetActive(true);
+                break;
+            case "Character Button 3":
+                characterRenderer[2].SetActive(true);
+                break;
+            case "Character Button 4":
+                characterRenderer[3].SetActive(true);
+                break;
+            case "Character Button 5":
+                characterRenderer[4].SetActive(true);
+                break;
+            default:
+                break;
+        }
+
     }
 
     [System.Serializable]

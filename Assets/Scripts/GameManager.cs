@@ -18,6 +18,10 @@ public class GameManager : MonoBehaviour
         {
             Debug.Log(LoggedInUsername);
         }
-        Debug.Log(SelectedCharacterName);
+        if (SelectedCharacterName != null)
+        {
+            Debug.Log(SelectedCharacterName);
+        }
+
     }
 }
