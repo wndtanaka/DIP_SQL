@@ -290,30 +290,45 @@ public class CharacterCreation : MonoBehaviour
 
     IEnumerator CreateCharacter(string username)
     {
-        // store createCharURL as a string 
-        string createCharURL = "http://localhost/loginsystem/CharacterCreation.php";
-        // create a new WWWForm()
-        WWWForm createCharForm = new WWWForm();
-        // match username_Post in PHP with username
-        createCharForm.AddField("username_Post", username);
-        // match charName_Post in PHP with charName.text
-        createCharForm.AddField("charName_Post", charName.text);
-        // match charClass_Post in PHP with charClass
-        createCharForm.AddField("charClass_Post", characterClass);
-        // match charLevel_Post in PHP with charLevel
-        createCharForm.AddField("charLevel_Post", newLevel);
-        // match charDd_Post in PHP with charLevel
-        createCharForm.AddField("charId_Post", charId);
-        // create a new WWW() taking crteateCharURL and createCharForm
-        WWW www = new WWW(createCharURL, createCharForm);
-        // return www
-        yield return www;
-        Debug.Log(www.text);
-        // TODO let MySQL send userdata
+        if (bonusPoint == 0)
+        {
+            // store createCharURL as a string 
+            string createCharURL = "http://localhost/loginsystem/CharacterCreation.php";
+            // create a new WWWForm()
+            WWWForm createCharForm = new WWWForm();
+            // match username_Post in PHP with username
+            createCharForm.AddField("username_Post", username);
+            // match charName_Post in PHP with charName.text
+            createCharForm.AddField("charName_Post", charName.text);
+            // match charClass_Post in PHP with charClass
+            createCharForm.AddField("charClass_Post", characterClass);
+            // match charLevel_Post in PHP with charLevel
+            createCharForm.AddField("charLevel_Post", newLevel);
+            // match charDd_Post in PHP with charLevel
+            createCharForm.AddField("charId_Post", charId);
+            createCharForm.AddField("str_Post", strength);
+            createCharForm.AddField("dex_Post", dexterity);
+            createCharForm.AddField("int_Post", intelligence);
+            createCharForm.AddField("wis_Post", wisdom);
+            createCharForm.AddField("cha_Post", charisma);
+            createCharForm.AddField("luc_Post", luck);
+            // create a new WWW() taking crteateCharURL and createCharForm
+            WWW www = new WWW(createCharURL, createCharForm);
+            // return www
+            yield return www;
+            Debug.Log(www.text);
+            // Load CharacterSelection Scene
+            SceneManager.LoadScene("CharacterSelection");
+        }
+        else
+        {
+            Debug.Log("Still have bonus points left");
+        }
     }
 
     public void CancelButton()
     {
+        // Load CharacterSelection Scene
         SceneManager.LoadScene("CharacterSelection");
     }
 
@@ -384,7 +399,7 @@ public class CharacterCreation : MonoBehaviour
 
     public void RandomiseCharacter()
     {
-        charClassText.text =  charClass[Random.Range(0, charClass.Length)];
+        charClassText.text = charClass[Random.Range(0, charClass.Length)];
         index = Random.Range(0, charClass.Length);
         colorIndex = Random.Range(0, charClass.Length);
         DefaultStats(index);

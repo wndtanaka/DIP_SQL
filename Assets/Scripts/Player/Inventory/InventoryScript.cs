@@ -123,6 +123,11 @@ namespace RPG
                 HealthPotion potion = (HealthPotion)Instantiate(items[1]);
                 AddItem(potion);
             }
+            if (Input.GetKeyDown(KeyCode.V))
+            {
+                Apple apple = (Apple)Instantiate(items[2]);
+                AddItem(apple);
+            }
         }
         public void AddBag(Bag bag)
         {

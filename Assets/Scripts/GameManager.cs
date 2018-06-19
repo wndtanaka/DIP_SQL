@@ -14,14 +14,5 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
         }
-        if (LoggedInUsername != null)
-        {
-            Debug.Log(LoggedInUsername);
-        }
-        if (SelectedCharacterName != null)
-        {
-            Debug.Log(SelectedCharacterName);
-        }
-
     }
 }

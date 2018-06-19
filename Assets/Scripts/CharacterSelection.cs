@@ -115,7 +115,6 @@ public class CharacterSelection : MonoBehaviour
         WWW www = new WWW(characterSelectionURL, createCharForm);
         // return www
         yield return www;
-        Debug.Log(www.text);
         string[] characters = www.text.Split('#');
         characterList = new string[characters.Length - 1];
         for (int i = 0; i < characterList.Length; i++)
@@ -233,7 +232,6 @@ public class CharacterSelection : MonoBehaviour
                 characterFiveLevel = charLevel.text;
             }
         }
-        Debug.Log(characterOneId);
     }
 
     public void GetCharacters()
@@ -286,7 +284,7 @@ public class CharacterSelection : MonoBehaviour
         }
         else
         {
-            Debug.Log("Select Character");
+            Debug.Log("Select Character before play");
         }
     }
 

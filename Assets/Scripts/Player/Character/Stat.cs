@@ -16,7 +16,9 @@ namespace RPG
         [SerializeField]
         float lerpSpeed;
 
-        public float MyMaxValue { get; set; }
+        public float MyMaxExp = 100f;
+        private float currentExp;
+        public float MyMaxValue = 100f;
         private float currentValue;
         public float MyCurrentValue
         {
@@ -40,10 +42,39 @@ namespace RPG
                     currentValue = value;
                 }
                 currentFill = currentValue / MyMaxValue;
-                if (statValue!= null)
+                if (statValue != null)
                 {
                     statValue.text = currentValue + " / " + MyMaxValue;
                 }
+            }
+        }
+        public float MyCurrentExp
+        {
+            get
+            {
+                return currentExp;
+            }
+
+            set
+            {
+                if (currentExp >= MyMaxExp)
+                {
+
+                    Player.MyInstance.currentLevel++;
+                    currentExp = currentExp - MyMaxExp;
+                    MyMaxExp *= 1.5f;
+                    MyMaxValue *= 1.1f;
+                }
+                else
+                {
+                    currentExp = value;
+                }
+                currentFill = currentExp / MyMaxExp;
+                if (statValue != null)
+                {
+                    statValue.text = currentExp + " / " + MyMaxExp;
+                }
+                value = 0;
             }
         }
 

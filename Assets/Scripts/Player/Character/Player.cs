@@ -23,9 +23,13 @@ namespace RPG
 
         [SerializeField]
         private Stat mana;
-
         [SerializeField]
         float startMana = 50;
+        [SerializeField]
+        private Stat exp;
+        [SerializeField]
+        float maxExp = 100;
+        public int currentLevel = 1;
         [SerializeField]
         private Block[] blocks;
         [SerializeField]
@@ -37,10 +41,24 @@ namespace RPG
 
         public Transform MyTarget { get; set; }
 
+        public Stat Exp
+        {
+            get
+            {
+                return exp;
+            }
+
+            set
+            {
+                exp = value;
+            }
+        }
+
         protected override void Start()
         {
             base.Start();
             mana.Initialize(startMana, startMana);
+            Exp.Initialize(0, maxExp);
         }
         protected override void Update()
         {
