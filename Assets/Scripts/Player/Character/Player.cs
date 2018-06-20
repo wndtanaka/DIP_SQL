@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace RPG
 {
@@ -20,15 +21,29 @@ namespace RPG
                 return instance;
             }
         }
-
+        [SerializeField]
+        Image healthBar;
+        [SerializeField]
+        Text healthText;
+        public float currentHealth;
+        public float maxHealth = 100;
+        [SerializeField]
+        Image manaBar;
+        [SerializeField]
+        Text manaText;
+        public float currentMana;
+        public float maxMana = 100;
+        [SerializeField]
+        Image expBar;
+        [SerializeField]
+        Text expText;
+        public float currentExp;
+        public float maxExp = 50;
         [SerializeField]
         private Stat mana;
         [SerializeField]
         float startMana = 50;
-        [SerializeField]
-        private Stat exp;
-        [SerializeField]
-        float maxExp = 100;
+
         public int currentLevel = 1;
         [SerializeField]
         private Block[] blocks;
@@ -41,29 +56,43 @@ namespace RPG
 
         public Transform MyTarget { get; set; }
 
-        public Stat Exp
-        {
-            get
-            {
-                return exp;
-            }
-
-            set
-            {
-                exp = value;
-            }
-        }
 
         protected override void Start()
         {
             base.Start();
-            mana.Initialize(startMana, startMana);
-            Exp.Initialize(0, maxExp);
+            currentHealth = maxHealth;
+            currentMana = maxMana;
         }
         protected override void Update()
         {
             GetInput();
             base.Update();
+
+            healthText.text = currentHealth + " / " + maxHealth;
+            manaText.text = currentMana + " / " + maxMana;
+            expText.text = currentExp + " / " + maxExp;
+            if (currentHealth >= 0)
+            {
+                healthBar.fillAmount = Mathf.Lerp(healthBar.fillAmount, currentHealth / maxHealth, Time.deltaTime * 10);
+            }
+            else
+            {
+                Debug.Log("Dead");
+            }
+            if (currentHealth >= 0)
+            {
+                manaBar.fillAmount = Mathf.Lerp(manaBar.fillAmount, currentMana / maxMana, Time.deltaTime * 10);
+            }
+            expBar.fillAmount = Mathf.Lerp(expBar.fillAmount, currentExp / maxExp, Time.deltaTime * 10);
+            if (currentExp >= maxExp)
+            {
+                currentLevel++;
+                CharInfo.bonusPoint += 3;
+                currentExp -= maxExp;
+                maxExp *= 1.5f;
+                maxHealth *= 1.2f;
+                maxMana *= 1.1f;
+            }
         }
 
         void GetInput()
@@ -92,13 +121,13 @@ namespace RPG
             #region Debugging Only
             if (Input.GetKeyDown(KeyCode.I))
             {
-                health.MyCurrentValue += 10;
-                mana.MyCurrentValue += 10;
+                currentHealth += 10;
+                currentMana += 10;
             }
             if (Input.GetKeyDown(KeyCode.O))
             {
-                health.MyCurrentValue -= 10;
-                mana.MyCurrentValue -= 10;
+                currentHealth -= 10;
+                currentMana -= 10;
             }
             #endregion
             foreach (string action in KeybindManager.Instance.ActionBinds.Keys)

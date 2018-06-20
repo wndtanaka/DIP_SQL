@@ -10,6 +10,7 @@ namespace RPG
     {
         [SerializeField]
         float startHealth = 100;
+
         [SerializeField]
         protected float speed;
 
@@ -34,7 +35,8 @@ namespace RPG
         [SerializeField]
         protected Stat health;
         public Stat Health
-        { get
+        {
+            get
             {
                 return health;
             }
@@ -42,9 +44,8 @@ namespace RPG
 
         // Use this for initialization
         protected virtual void Start()
-
         {
-            health.Initialize(startHealth, startHealth);
+            //health.Initialize(startHealth, startHealth);
             anim = GetComponent<Animator>();
             rigid = GetComponent<Rigidbody2D>();
         }

@@ -276,7 +276,7 @@ public class CharacterSelection : MonoBehaviour
     }
     public void SelectCharacter()
     {
-        Debug.Log(selectedCharacterName);
+        //Debug.Log(selectedCharacterName);
         GameManager.SelectedCharacterName = selectedCharacterName;
         if (selectedCharacterName != null)
         {

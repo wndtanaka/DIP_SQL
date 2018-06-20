@@ -63,7 +63,8 @@ namespace RPG
                     Player.MyInstance.currentLevel++;
                     currentExp = currentExp - MyMaxExp;
                     MyMaxExp *= 1.5f;
-                    MyMaxValue *= 1.1f;
+                    MyMaxValue *= 2f;
+                    Debug.Log(MyMaxValue);
                 }
                 else
                 {
@@ -90,6 +91,17 @@ namespace RPG
             if (currentFill != content.fillAmount)
             {
                 content.fillAmount = Mathf.Lerp(content.fillAmount, currentFill, Time.deltaTime * lerpSpeed);
+            }
+            if (true)
+            {
+                if (currentExp >= MyMaxExp)
+                {
+                    Player.MyInstance.currentLevel++;
+                    currentExp = currentExp - MyMaxExp;
+                    MyMaxExp *= 1.5f;
+                    MyMaxValue *= 2f;
+                    Debug.Log(MyMaxValue);
+                }
             }
         }
         public void Initialize(float currentValue, float maxValue)

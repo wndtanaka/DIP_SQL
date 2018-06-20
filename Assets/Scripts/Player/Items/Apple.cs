@@ -12,7 +12,7 @@ namespace RPG
         public void Use()
         {
             Remove();
-            Player.MyInstance.Exp.MyCurrentExp += exp;
+            Player.MyInstance.currentExp += exp;
         }
     }
 }

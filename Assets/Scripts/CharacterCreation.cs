@@ -139,7 +139,6 @@ public class CharacterCreation : MonoBehaviour
                 plusButton.interactable = true;
             }
         }
-
     }
 
     public void DefaultStats(int index)

@@ -11,10 +11,10 @@ namespace RPG
         int health;
         public void Use()
         {
-            if (Player.MyInstance.Health.MyCurrentValue < Player.MyInstance.Health.MyMaxValue)
+            if (Player.MyInstance.currentHealth < Player.MyInstance.maxHealth)
             {
                 Remove();
-                Player.MyInstance.Health.MyCurrentValue += health;
+                Player.MyInstance.currentHealth += health;
             }
         }
     }
