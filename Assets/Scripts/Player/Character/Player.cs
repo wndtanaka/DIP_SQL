@@ -44,7 +44,7 @@ namespace RPG
         [SerializeField]
         float startMana = 50;
 
-        public int currentLevel = 1;
+        public static int currentLevel = 1;
         [SerializeField]
         private Block[] blocks;
         [SerializeField]

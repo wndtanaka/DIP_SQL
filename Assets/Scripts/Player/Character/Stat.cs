@@ -60,7 +60,7 @@ namespace RPG
                 if (currentExp >= MyMaxExp)
                 {
 
-                    Player.MyInstance.currentLevel++;
+                    Player.currentLevel++;
                     currentExp = currentExp - MyMaxExp;
                     MyMaxExp *= 1.5f;
                     MyMaxValue *= 2f;
@@ -96,7 +96,7 @@ namespace RPG
             {
                 if (currentExp >= MyMaxExp)
                 {
-                    Player.MyInstance.currentLevel++;
+                    Player.currentLevel++;
                     currentExp = currentExp - MyMaxExp;
                     MyMaxExp *= 1.5f;
                     MyMaxValue *= 2f;
