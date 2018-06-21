@@ -318,7 +318,6 @@ public class CharacterCreation : MonoBehaviour
             Debug.Log(www.text);
             // Load CharacterSelection Scene
             SceneManager.LoadScene("CharacterSelection");
-            GameManager.CharID = charId;
         }
         else
         {

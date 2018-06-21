@@ -296,6 +296,7 @@ public class CharacterSelection : MonoBehaviour
             GameObject goOne = Instantiate(idOne.CharacterPrefab);
             goOne.transform.SetParent(GameObject.Find("Character One").transform);
             goOne.transform.position = GameObject.Find("Character One").transform.position;
+            GameManager.CharID = characterOneId;
         }
 
         if (characterTwoId != null)
@@ -304,6 +305,7 @@ public class CharacterSelection : MonoBehaviour
             GameObject goTwo = Instantiate(idTwo.CharacterPrefab);
             goTwo.transform.SetParent(GameObject.Find("Character Two").transform);
             goTwo.transform.position = GameObject.Find("Character Two").transform.position;
+            GameManager.CharID = characterTwoId;
         }
         if (characterThreeId != null)
         {
@@ -311,6 +313,7 @@ public class CharacterSelection : MonoBehaviour
             GameObject goThree = Instantiate(idThree.CharacterPrefab);
             goThree.transform.SetParent(GameObject.Find("Character Three").transform);
             goThree.transform.position = GameObject.Find("Character Three").transform.position;
+            GameManager.CharID = characterThreeId;
         }
         if (characterFourId != null)
         {
@@ -318,6 +321,7 @@ public class CharacterSelection : MonoBehaviour
             GameObject goFour = Instantiate(idFour.CharacterPrefab);
             goFour.transform.SetParent(GameObject.Find("Character Four").transform);
             goFour.transform.position = GameObject.Find("Character Four").transform.position;
+            GameManager.CharID = characterFourId;
         }
         if (characterFiveId != null)
         {
@@ -325,6 +329,7 @@ public class CharacterSelection : MonoBehaviour
             GameObject goFive = Instantiate(idFive.CharacterPrefab);
             goFive.transform.SetParent(GameObject.Find("Character Five").transform);
             goFive.transform.position = GameObject.Find("Character Five").transform.position;
+            GameManager.CharID = characterFiveId;
         }
     }
 

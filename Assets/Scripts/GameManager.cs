@@ -25,9 +25,6 @@ public class GameManager : MonoBehaviour
         Scene currentScene = SceneManager.GetActiveScene();
         sceneName = currentScene.name;
 
-        // debug only;
-        CharID = "00";
-
         if (sceneName == "RPG")
         {
             for (int i = 0; i < characters.Length; i++)
