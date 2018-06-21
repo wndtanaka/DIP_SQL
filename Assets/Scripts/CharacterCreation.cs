@@ -303,7 +303,7 @@ public class CharacterCreation : MonoBehaviour
             createCharForm.AddField("charClass_Post", characterClass);
             // match charLevel_Post in PHP with charLevel
             createCharForm.AddField("charLevel_Post", newLevel);
-            // match charDd_Post in PHP with charLevel
+            // match charId_Post in PHP with charLevel
             createCharForm.AddField("charId_Post", charId);
             createCharForm.AddField("str_Post", strength);
             createCharForm.AddField("dex_Post", dexterity);
@@ -318,6 +318,7 @@ public class CharacterCreation : MonoBehaviour
             Debug.Log(www.text);
             // Load CharacterSelection Scene
             SceneManager.LoadScene("CharacterSelection");
+            GameManager.CharID = charId;
         }
         else
         {

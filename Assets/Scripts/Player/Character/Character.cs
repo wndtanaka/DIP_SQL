@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace RPG
 {
-    [RequireComponent(typeof(Rigidbody2D))]
+    //[RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(Animator))]
     public abstract class Character : MonoBehaviour
     {
@@ -53,18 +53,18 @@ namespace RPG
         // Update is called once per frame
         protected virtual void Update()
         {
-            HandleLayers();
+            //HandleLayers();
         }
 
-        private void FixedUpdate()
-        {
-            Move();
-        }
+        //private void FixedUpdate()
+        //{
+        //    Move();
+        //}
 
-        public void Move()
-        {
-            rigid.velocity = direction.normalized * speed;
-        }
+        //public void Move()
+        //{
+        //    rigid.velocity = direction.normalized * speed;
+        //}
 
         public void HandleLayers()
         {
